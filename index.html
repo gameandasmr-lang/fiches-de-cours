@@ -58,8 +58,11 @@ body {
 @media (max-width: 780px) { .classeur { grid-template-columns: minmax(0, 1fr); } }
 
 /* Intercalaires */
-.sommaire { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 18px; }
-@media (max-width: 780px) { .sommaire { position: static; } }
+.sommaire { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 18px; align-content: start;
+  max-height: calc(100vh - 32px); overflow-y: auto; overscroll-behavior: contain; padding-right: 6px; scrollbar-width: thin; scrollbar-color: var(--doux) transparent; }
+.sommaire::-webkit-scrollbar { width: 6px; }
+.sommaire::-webkit-scrollbar-thumb { background: var(--doux); border-radius: 3px; }
+@media (max-width: 780px) { .sommaire { position: static; max-height: none; overflow: visible; } }
 .marque { font-family: var(--display); font-weight: 800; font-size: 1.35rem; line-height: 1.15; letter-spacing: -.01em; }
 .marque small { display: block; font-family: var(--texte); font-weight: 400; font-size: .82rem; color: var(--doux); letter-spacing: 0; margin-top: 4px; }
 .module { display: grid; gap: 6px; }
@@ -71,7 +74,19 @@ body {
 .module a:hover { background: var(--accent-fond); }
 .module a[aria-current="page"] { background: var(--accent); color: var(--feuille); font-weight: 600; }
 .module span.avenir { color: var(--doux); font-style: italic; }
-.module h3.partie { font-size: .74rem; font-weight: 600; color: var(--encre); margin: 10px 0 2px; padding-left: 10px; border-left: 2px solid var(--accent); }
+/* Sommaire en dossiers repliables (demande d'Arnaud, 15/11/2026) */
+details.dossier > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; user-select: none; }
+details.dossier > summary::-webkit-details-marker { display: none; }
+details.dossier > summary::before { content: ""; width: 7px; height: 7px; flex: none; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; opacity: .7; }
+details.dossier[open] > summary::before { transform: rotate(45deg); }
+details.dossier > summary:hover { background: var(--accent-fond); }
+details.dossier > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.dossier-titre { flex: 1; }
+.compte { font: 600 .68rem var(--mono); color: var(--doux); }
+details.module > summary .dossier-titre { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--doux); font-weight: 600; }
+details.partie > summary .dossier-titre { font-size: .8rem; font-weight: 600; color: var(--encre); }
+.dossier-contenu { display: grid; gap: 4px; margin: 4px 0 0 8px; padding-left: 8px; border-left: 1px solid var(--trait, rgba(127,127,127,.25)); }
+details.partie { margin-top: 4px; }
 .niv { font: 600 .7rem var(--mono); padding: 1px 6px; border-radius: 4px; border: 1px solid currentColor; opacity: .8; }
 
 /* Fiche */
@@ -1021,20 +1036,48 @@ function sommaire(actif) {
   const parCoeur = `<div class="module coeur"><h2>À savoir par cœur</h2>
     <a href="#par-coeur"${cur("par-coeur", actif)}><span>Tous les modules</span><span class="niv">${total}</span></a>
     ${PAR_COEUR.map(m => `<a href="#${pcId(m.module)}"${cur(pcId(m.module), actif)}><span>Module ${esc(m.module)}</span><span class="niv">${nbPoints(m)}</span></a>`).join("")}</div>`;
+  // Chaque module et chaque partie est un dossier qu'on ouvre ou ferme d'un clic (<details>).
+  // Le dossier qui contient la fiche affichée s'ouvre toujours ; les autres gardent l'état choisi par Arnaud.
+  const lien = f => f.pret
+    ? `<a href="#${f.id}"${cur(f.id, actif)}><span>${esc(titreNum(f))}</span><span class="niv">${f.niveau}</span></a>`
+    : `<span class="avenir"><span>${esc(titreNum(f))}</span><span class="niv">bientôt</span></span>`;
+  const dossier = (cle, classe, titre, compte, contenu, contientActif, ouvertParDefaut) => {
+    const ouvert = contientActif || (cle in dossiersOuverts ? dossiersOuverts[cle] : ouvertParDefaut);
+    return `<details class="dossier ${classe}" data-cle="${cle}"${ouvert ? " open" : ""}><summary><span class="dossier-titre">${titre}</span><span class="compte">${compte}</span></summary><div class="dossier-contenu">${contenu}</div></details>`;
+  };
   document.getElementById("intercalaires").innerHTML = parCoeur + Object.entries(modules).map(([m, liste]) => {
     const pc = PAR_COEUR.find(x => x.module === m);
-    let partie = null;
-    return `<div class="module"><h2>Module ${esc(m)}</h2>${liste.sort(ordreChapitre).map(f => {
-      const cle = m.split(" ")[0] + (f.partie || "");
-      const sousTitre = f.partie && cle !== partie && PARTIES[cle] ? `<h3 class="partie">${esc(PARTIES[cle])}</h3>` : "";
-      partie = cle;
-      return sousTitre + (f.pret
-      ? `<a href="#${f.id}"${cur(f.id, actif)}><span>${esc(titreNum(f))}</span><span class="niv">${f.niveau}</span></a>`
-      : `<span class="avenir"><span>${esc(titreNum(f))}</span><span class="niv">bientôt</span></span>`);
-    }).join("")}
-      ${pc ? `<a class="lien-coeur" href="#${pcId(m)}"${cur(pcId(m), actif)}><span>★ Par cœur de ce module</span><span class="niv">${nbPoints(pc)}</span></a>` : ""}</div>`;
+    const num = m.split(" ")[0];
+    const groupes = [];
+    liste.sort(ordreChapitre).forEach(f => {
+      const cle = num + (f.partie || "");
+      if (!groupes.length || groupes[groupes.length - 1].cle !== cle) groupes.push({ cle, fiches: [] });
+      groupes[groupes.length - 1].fiches.push(f);
+    });
+    const contenu = groupes.map(g => {
+      const liens = g.fiches.map(lien).join("");
+      if (!PARTIES[g.cle]) return liens;
+      const prets = g.fiches.filter(f => f.pret).length;
+      return dossier("p" + g.cle, "partie", esc(PARTIES[g.cle]), `${prets}/${g.fiches.length}`, liens,
+        g.fiches.some(f => f.id === actif), g.fiches.some(f => f.pret));
+    }).join("") + (pc ? `<a class="lien-coeur" href="#${pcId(m)}"${cur(pcId(m), actif)}><span>★ Par cœur de ce module</span><span class="niv">${nbPoints(pc)}</span></a>` : "");
+    const prets = liste.filter(f => f.pret).length;
+    return dossier("m" + num, "module", `Module ${esc(m)}`, `${prets}/${liste.length}`, contenu,
+      liste.some(f => f.id === actif) || actif === pcId(m), true);
   }).join("");
 }
+
+// État des dossiers du sommaire (ouvert / fermé), gardé sur l'appareil
+let dossiersOuverts = {};
+try { dossiersOuverts = JSON.parse(localStorage.getItem("classeur-dossiers") || "{}"); } catch (e) {}
+// Seul un clic d'Arnaud compte (pas l'ouverture automatique du dossier de la fiche affichée)
+document.addEventListener("click", e => {
+  const s = e.target.closest && e.target.closest("details.dossier > summary");
+  if (!s) return;
+  const d = s.parentElement;
+  dossiersOuverts[d.dataset.cle] = !d.open;   // le clic va inverser l'état
+  try { localStorage.setItem("classeur-dossiers", JSON.stringify(dossiersOuverts)); } catch (err) {}
+});
 
 // Mode révision : les réponses sont cachées, un clic en dévoile une (préférence gardée sur l'appareil).
 let revision = false;
