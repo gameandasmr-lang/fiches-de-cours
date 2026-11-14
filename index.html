@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Classeur cyber d'Arnaud</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Mise en page : un classeur, avec les intercalaires par module à gauche et la fiche de cours à droite sur papier quadrillé */
+:root {
+  --papier: #f6f7f9;
+  --feuille: #ffffff;
+  --encre: #1b2233;
+  --doux: #5b6478;
+  --trait: #dfe3ea;
+  --grille: rgba(37, 71, 208, .05);
+  --accent: #2547d0;
+  --accent-fond: #e8edff;
+  --piege: #b4540a;
+  --piege-fond: #fff3e6;
+  --ok: #1d7a4f;
+  --ok-fond: #e6f5ec;
+  --terminal: #141a26;
+  --terminal-texte: #d7e0f0;
+  --terminal-note: #f2b766;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --texte: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #10141d; --feuille: #171c28; --encre: #e4e8f2; --doux: #9aa3b8; --trait: #2a3142;
+    --grille: rgba(140, 165, 255, .05); --accent: #8ea6ff; --accent-fond: #1f2848;
+    --piege: #f2a65a; --piege-fond: #2e2114; --ok: #5fd39a; --ok-fond: #14291f;
+    --terminal: #0b0e15; --terminal-texte: #d7e0f0; --terminal-note: #f2b766;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #10141d; --feuille: #171c28; --encre: #e4e8f2; --doux: #9aa3b8; --trait: #2a3142;
+  --grille: rgba(140, 165, 255, .05); --accent: #8ea6ff; --accent-fond: #1f2848;
+  --piege: #f2a65a; --piege-fond: #2e2114; --ok: #5fd39a; --ok-fond: #14291f;
+  --terminal: #0b0e15; --terminal-texte: #d7e0f0; --terminal-note: #f2b766;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--papier); color: var(--encre);
+  font: 16px/1.6 var(--texte);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+.classeur { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 780px) { .classeur { grid-template-columns: minmax(0, 1fr); } }
+
+/* Intercalaires */
+.sommaire { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: grid; gap: 18px; }
+@media (max-width: 780px) { .sommaire { position: static; } }
+.marque { font-family: var(--display); font-weight: 800; font-size: 1.35rem; line-height: 1.15; letter-spacing: -.01em; }
+.marque small { display: block; font-family: var(--texte); font-weight: 400; font-size: .82rem; color: var(--doux); letter-spacing: 0; margin-top: 4px; }
+.module { display: grid; gap: 6px; }
+.module h2 { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--doux); margin: 0; font-weight: 600; }
+.module a, .module span.avenir {
+  display: flex; justify-content: space-between; gap: 8px; align-items: center;
+  padding: 8px 10px; border-radius: 6px; text-decoration: none; color: var(--encre); font-size: .95rem;
+}
+.module a:hover { background: var(--accent-fond); }
+.module a[aria-current="page"] { background: var(--accent); color: var(--feuille); font-weight: 600; }
+.module span.avenir { color: var(--doux); font-style: italic; }
+.niv { font: 600 .7rem var(--mono); padding: 1px 6px; border-radius: 4px; border: 1px solid currentColor; opacity: .8; }
+
+/* Fiche */
+.fiche {
+  background-color: var(--feuille);
+  background-image: linear-gradient(var(--grille) 1px, transparent 1px), linear-gradient(90deg, var(--grille) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border: 1px solid var(--trait); border-radius: 10px;
+  padding: clamp(20px, 4vw, 44px);
+  display: grid; gap: 30px; min-width: 0;
+}
+.entete { display: grid; gap: 10px; border-bottom: 2px solid var(--encre); padding-bottom: 18px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font: .8rem var(--mono); color: var(--doux); }
+.meta b { color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; margin: 0; letter-spacing: -.02em; text-wrap: balance; }
+.regle {
+  font-family: var(--display); font-weight: 600; font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.35;
+  background: var(--accent-fond); border-left: 5px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 0;
+}
+.regle span { display: block; font: 600 .72rem var(--texte); text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: 6px; }
+section { display: grid; gap: 12px; min-width: 0; }
+h3 { font-family: var(--display); font-weight: 600; font-size: 1.2rem; margin: 0; display: flex; gap: 10px; align-items: baseline; }
+h3 .num { font: 600 .8rem var(--mono); color: var(--accent); }
+p { margin: 0; max-width: 68ch; }
+.deux { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+
+pre {
+  margin: 0; background: var(--terminal); color: var(--terminal-texte); font: .86rem/1.55 var(--mono);
+  padding: 16px 18px; border-radius: 8px; overflow-x: auto; white-space: pre;
+}
+pre .n { color: var(--terminal-note); }
+pre .c { color: #7f8aa3; }
+pre .p { color: #8ea6ff; }
+
+.pieges { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+.pieges li { background: var(--piege-fond); border-left: 4px solid var(--piege); padding: 10px 14px; border-radius: 0 6px 6px 0; }
+.pieges li b { color: var(--piege); }
+
+.enplus { border: 1px dashed var(--trait); border-radius: 8px; padding: 14px 18px; display: grid; gap: 8px; background: var(--feuille); }
+.enplus h4 { margin: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--doux); }
+
+.questions { display: grid; gap: 10px; }
+details { border: 1px solid var(--trait); border-radius: 8px; background: var(--feuille); }
+summary { cursor: pointer; padding: 12px 16px; font-weight: 600; list-style: none; display: flex; gap: 10px; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "▸"; color: var(--accent); transition: transform .15s; }
+details[open] summary::before { transform: rotate(90deg); }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.reponse { padding: 0 16px 14px 36px; color: var(--encre); }
+.reponse::before { content: "Réponse"; display: block; font: 600 .7rem var(--texte); text-transform: uppercase; letter-spacing: .1em; color: var(--ok); margin-bottom: 4px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.dessin { overflow-x: auto; background: var(--feuille); border: 1px solid var(--trait); border-radius: 8px; padding: 12px; color: var(--encre); }
+.dessin svg { display: block; width: 100%; min-width: 560px; height: auto; font-family: var(--texte); }
+.dessin svg.petit { min-width: 420px; max-width: 620px; margin: 0 auto; }
+img.illus { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--trait); background: #fff; }
+.photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.photo { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.photo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--trait); }
+.photo b { font-size: .9rem; }
+.photos.bd { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.photo small { font-size: .75rem; color: var(--doux); }
+figcaption { font-size: .88rem; color: var(--doux); max-width: 70ch; }
+.liens { font-size: .9rem; color: var(--doux); border-top: 1px solid var(--trait); padding-top: 16px; }
+code { font: .9em var(--mono); background: var(--accent-fond); padding: 1px 5px; border-radius: 4px; }
+/* Agrandir une image ou un schéma (demande d'Arnaud, 11/11/2026 : les détails sont difficiles à lire sur la fiche) */
+.zoomable { cursor: zoom-in; }
+dialog.loupe { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+dialog.loupe::backdrop { background: rgba(10, 12, 20, .88); }
+.loupe-in { width: 100%; height: 100%; display: grid; grid-template-rows: 1fr auto; gap: 10px; padding: max(16px, env(safe-area-inset-top, 0px)) 16px 16px; cursor: zoom-out; }
+.loupe-img { min-height: 0; display: grid; place-items: center; overflow: auto; }
+.loupe-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; background: #fff; }
+.loupe-img .dessin { width: min(1400px, 100%); max-height: 100%; overflow: auto; }
+.loupe-img .dessin svg { min-width: 900px; }
+.loupe-txt { color: #eef0f6; font-size: .95rem; max-width: 80ch; margin: 0 auto; text-align: center; }
+.loupe-fermer { position: fixed; top: max(12px, env(safe-area-inset-top, 0px)); right: 16px; border: 0; border-radius: 999px; width: 40px; height: 40px; font-size: 22px; background: #fff; color: #161e33; cursor: pointer; }
+/* À savoir par cœur : un intercalaire à part, un sous-dossier par module (demande d'Arnaud, 12/11/2026) */
+.module.coeur { background: var(--ok-fond); border-radius: 8px; padding: 10px 8px 8px; }
+.module.coeur h2 { color: var(--ok); padding-left: 2px; }
+.module.coeur a[aria-current="page"], .module a.lien-coeur[aria-current="page"] { background: var(--ok); }
+.module a.lien-coeur { color: var(--ok); font-size: .88rem; }
+.module a.lien-coeur:hover { background: var(--ok-fond); }
+.pc-barre { display: flex; flex-wrap: wrap; gap: 10px; }
+.pc-barre button { font: 600 .9rem var(--texte); padding: 9px 14px; border-radius: 6px; border: 1px solid var(--trait); background: var(--feuille); color: var(--encre); cursor: pointer; }
+.pc-barre button[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--feuille); }
+.pc-barre button:focus-visible, .pc-rep:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pc-liste { display: grid; gap: 34px; }
+.pc-module { display: grid; gap: 18px; }
+.pc-titre { margin: 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; border-bottom: 1px solid var(--trait); padding-bottom: 8px; font-family: var(--display); font-size: 1.4rem; }
+.pc-titre a { color: var(--encre); text-decoration: none; }
+.pc-titre a:hover { color: var(--accent); }
+.pc-titre span { font: .8rem var(--mono); color: var(--doux); }
+.pc-themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 16px; }
+.pc-theme { background: var(--feuille); border: 1px solid var(--trait); border-radius: 8px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pc-theme h3 { font-size: 1.05rem; }
+.pc-theme dl { margin: 0; display: grid; gap: 6px; }
+.pc-ligne { display: grid; grid-template-columns: minmax(96px, 38%) minmax(0, 1fr); gap: 10px; align-items: baseline; border-top: 1px dashed var(--trait); padding-top: 6px; }
+.pc-ligne:first-child { border-top: 0; padding-top: 0; }
+.pc-ligne dt { font: 600 .9rem var(--mono); color: var(--accent); overflow-wrap: anywhere; }
+.pc-ligne dd { margin: 0; min-width: 0; }
+.pc-rep { all: unset; display: block; font-size: .92rem; line-height: 1.45; cursor: default; border-radius: 4px; overflow-wrap: anywhere; }
+.pc-liste.cache .pc-rep { cursor: pointer; color: transparent; background: var(--accent-fond); user-select: none; }
+.pc-liste.cache .pc-rep::after { content: "toucher pour voir"; color: var(--doux); font-size: .78rem; font-style: italic; position: relative; }
+.pc-liste.cache .pc-rep { position: relative; }
+.pc-liste.cache .pc-rep::after { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); }
+.pc-liste.cache .pc-rep.vu { color: var(--encre); background: var(--ok-fond); user-select: auto; }
+.pc-liste.cache .pc-rep.vu::after { content: none; }
+.pc-fiche { font-size: .85rem; color: var(--accent); text-decoration: none; justify-self: start; }
+.pc-fiche:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="classeur">
+  <nav class="sommaire" aria-label="Fiches">
+    <div class="marque">Classeur cyber<small>Les fiches de cours d'Arnaud · objectif AIS 2027</small></div>
+    <div id="intercalaires"></div>
+  </nav>
+  <main id="fiche" class="fiche"></main>
+</div>
+
+<script>
+// Une fiche = un objet. Pour ajouter une leçon : ajouter un objet ici et republier.
+const FICHES = [
+  {
+    id: "dns", module: "1 · Réseau", niveau: "M", titre: "Le DNS : du nom à l'adresse",
+    date: "07/11/2026",
+    regle: "Le DNS traduit un nom de domaine en adresse IP. Une question (« quelle est l'adresse de picard.fr ? »), une réponse : l'IP de la cible. Il ne s'occupe pas des ports.",
+    figures: [{
+      legende: "Ton PC ne pose qu'une question, à ta box. C'est la box (le résolveur) qui fait le tour des serveurs DNS. Une fois l'IP obtenue, le PC contacte le site directement : le DNS n'intervient plus.",
+      svg: `<svg viewBox="0 0 720 330" role="img" aria-label="Chemin d'une résolution DNS : le PC demande à la box, la box interroge la racine, le .fr puis le serveur DNS de picard.fr, renvoie l'IP au PC, qui contacte ensuite directement le site.">
+  <defs><marker id="fl-dns" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  <marker id="fl-dns-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="20" y="110" width="110" height="60" rx="8"/>
+    <rect x="240" y="110" width="130" height="60" rx="8"/>
+    <rect x="480" y="20" width="220" height="56" rx="8"/>
+    <rect x="480" y="112" width="220" height="56" rx="8"/>
+    <rect x="480" y="204" width="220" height="56" rx="8"/>
+    <rect x="480" y="268" width="220" height="50" rx="8" style="stroke:var(--accent)" stroke-width="2"/>
+    <line x1="130" y1="126" x2="238" y2="126" marker-end="url(#fl-dns)"/>
+    <line x1="370" y1="124" x2="478" y2="50" marker-end="url(#fl-dns)"/>
+    <line x1="370" y1="140" x2="478" y2="140" marker-end="url(#fl-dns)"/>
+    <line x1="370" y1="156" x2="478" y2="228" marker-end="url(#fl-dns)"/>
+    <line x1="240" y1="154" x2="132" y2="154" stroke-dasharray="5 4" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#fl-dns-a)"/>
+    <polyline points="75,170 75,293 478,293" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#fl-dns-a)"/>
+  </g>
+  <g fill="currentColor" text-anchor="middle" font-size="13">
+    <text x="75" y="136" font-weight="600">Ton PC</text><text x="75" y="155" font-size="11" opacity=".75">192.168.1.94</text>
+    <text x="305" y="136" font-weight="600">Ta box</text><text x="305" y="155" font-size="11" opacity=".75">résolveur DNS</text>
+    <text x="590" y="43" font-weight="600">Serveur racine</text><text x="590" y="62" font-size="11" opacity=".75">« les .fr ? va voir là »</text>
+    <text x="590" y="135" font-weight="600">Serveur du .fr</text><text x="590" y="154" font-size="11" opacity=".75">« picard.fr ? va voir là »</text>
+    <text x="590" y="227" font-weight="600">Serveur DNS de picard.fr</text><text x="590" y="246" font-size="12" font-weight="600" style="fill:var(--accent)">« c'est 51.91.60.233 »</text>
+    <text x="590" y="290" font-weight="600" style="fill:var(--accent)">Le site picard.fr</text><text x="590" y="307" font-size="11" opacity=".75">51.91.60.233 · port 443</text>
+    <text x="185" y="118" font-size="12">① picard.fr ?</text>
+    <text x="185" y="172" font-size="12" font-weight="600" style="fill:var(--accent)">⑤ 51.91.60.233</text>
+    <text x="410" y="78" font-size="12">②</text><text x="424" y="134" font-size="12">③</text><text x="410" y="206" font-size="12">④</text>
+    <text x="280" y="285" font-size="12" font-weight="600" style="fill:var(--accent)">⑥ connexion directe</text>
+  </g>
+</svg>`
+    }],
+    probleme: "Les ordinateurs ne se parlent qu'avec des adresses IP, c'est-à-dire des numéros. Les humains retiennent des noms. Sans DNS, il faudrait connaître 51.91.60.233 par cœur pour aller sur Picard.",
+    analogie: "Le répertoire de contacts du téléphone : tu touches « Maman » et le téléphone compose le numéro. Le DNS est le répertoire d'internet, réparti sur des milliers de serveurs dans le monde.",
+    schema:
+`<span class="p">PC 192.168.1.94</span> : « picard.fr ? »
+ 1. cache du PC : déjà connu ?               <span class="c">non ↓</span>
+ 2. résolveur DNS = la box (192.168.1.254)   <span class="c">ne sait pas ↓</span>
+ 3. serveur racine    → « les .fr, c'est par là »
+ 4. serveur du .fr    → « picard.fr, c'est par là »
+ 5. serveur de Picard → <span class="n">picard.fr = 51.91.60.233</span>  <span class="c">(fait autorité)</span>
+ ← la box renvoie la réponse au PC
+<span class="p">PC</span> → contacte directement 51.91.60.233 (port 443) → la page s'affiche`,
+    exemple:
+`<span class="p">C:\\Users\\ROG&gt;</span> nslookup picard.fr
+Serveur :   UnKnown
+Address:  192.168.1.254          <span class="n">← QUI A RÉPONDU : ma box (le résolveur)</span>
+
+Réponse ne faisant pas autorité : <span class="n">← la box a relayé, ce n'est pas le serveur de Picard</span>
+Nom :    picard.fr
+Address:  51.91.60.233           <span class="n">← LA RÉPONSE : l'IP de picard.fr</span>`,
+    exempleNote: "Vérifié avec <code>ipconfig</code> : mon PC = <code>192.168.1.94</code>, ma passerelle = <code>192.168.1.254</code>. Ma box est à la fois ma porte de sortie vers internet et mon résolveur DNS.",
+    pieges: [
+      ["Le moteur de recherche n'intervient pas.", "Taper une adresse exacte, c'est le DNS. Google ne sert que quand on tape des mots."],
+      ["Le DNS renvoie une IP, pas un domaine.", "On envoie le nom, on reçoit le numéro."],
+      ["Le DNS ne gère pas les ports.", "Le DNS trouve l'immeuble (l'IP). Le port, c'est la porte, et le navigateur la choisit tout seul."],
+      ["Dans nslookup, « Serveur » = qui a répondu.", "Ce n'est pas qui a demandé. Mon PC n'apparaît nulle part dans le résultat."]
+    ],
+    enplus: "<p><b>Les alias.</b> <code>nslookup www.picard.fr</code> donne une autre adresse que <code>picard.fr</code> : <code>www.picard.fr</code> est un alias qui renvoie vers un CDN (Cloudflare). Le DNS suit la chaîne des alias jusqu'à une vraie adresse. Deux adresses dans la réponse = si l'une tombe, l'autre répond.</p><p><b>La recherche inverse.</b> <code>nslookup 51.91.60.233</code> part de l'IP pour retrouver le nom du serveur (<code>eole2.iptwins.com</code>), puis une base publique donne l'hébergeur (OVH). C'est de la reconnaissance passive, légale.</p>",
+    questions: [
+      ["Explique à un collègue de Picard ce qui se passe entre le moment où il tape picard.fr et l'affichage de la page.",
+       "Le PC regarde son cache, puis demande au résolveur (la box). Le résolveur remonte la chaîne : serveur racine → serveur du .fr → serveur de Picard, qui donne l'adresse IP. Le navigateur contacte ensuite directement cette IP, sur le port 443, et la page s'affiche."],
+      ["Mise en situation : un collègue dit « internet ne marche plus ». Pourtant ping 51.91.60.233 répond, alors que picard.fr ne s'ouvre pas. Que soupçonnes-tu ?",
+       "Le DNS. Le réseau fonctionne, puisqu'on joint l'IP. C'est la traduction nom → IP qui échoue (résolveur en panne ou mal configuré)."],
+      ["Piège : dans un résultat de nslookup, l'adresse sous « Serveur », c'est celle de mon PC ?",
+       "Non. C'est celle du résolveur DNS qui a répondu, en général la box."]
+    ],
+    liens: "TryHackMe · Pre Security, module 6 « How The Web Works » → salle DNS in Detail. Fiche liée : L'adresse IP."
+  },
+  {
+    id: "ip", module: "1 · Réseau", niveau: "M", titre: "L'adresse IP",
+    date: "07/11/2026",
+    regle: "Une adresse IP identifie un appareil sur un réseau. En IPv4 : 4 nombres de 0 à 255. Elle a deux parties, le réseau (la rue) et la machine (le numéro), et c'est le masque qui dit où passe la coupure.",
+    figures: [{
+      legende: "Le masque 255.255.255.0 dit : les trois premiers nombres sont la rue, le dernier est le numéro. Les 255 désignent la partie réseau, le 0 la partie machine. Avec un autre masque, la coupure se déplace.",
+      petit: true,
+      svg: `<svg class="petit" viewBox="0 0 520 150" role="img" aria-label="L'adresse 192.168.1.94 coupée en deux par le masque 255.255.255.0 : 192.168.1 est le réseau, 94 est la machine.">
+  <g font-family="IBM Plex Mono, Consolas, monospace" text-anchor="middle" fill="currentColor">
+    <text x="90" y="52" font-size="30" font-weight="600">192</text><text x="150" y="52" font-size="30">.</text>
+    <text x="210" y="52" font-size="30" font-weight="600">168</text><text x="270" y="52" font-size="30">.</text>
+    <text x="320" y="52" font-size="30" font-weight="600">1</text><text x="370" y="52" font-size="30">.</text>
+    <text x="430" y="52" font-size="30" font-weight="600" style="fill:var(--accent)">94</text>
+    <text x="90" y="88" font-size="13" opacity=".7">255</text><text x="210" y="88" font-size="13" opacity=".7">255</text>
+    <text x="320" y="88" font-size="13" opacity=".7">255</text><text x="430" y="88" font-size="13" opacity=".7">0</text>
+    <text x="22" y="88" font-size="11" opacity=".7" text-anchor="start">masque</text>
+  </g>
+  <g fill="none" stroke-width="2">
+    <path d="M60,100 L60,110 L350,110 L350,100" stroke="currentColor"/>
+    <path d="M400,100 L400,110 L460,110 L460,100" style="stroke:var(--accent)"/>
+    <line x1="385" y1="18" x2="385" y2="120" stroke="currentColor" stroke-dasharray="4 4" opacity=".5"/>
+  </g>
+  <g text-anchor="middle" font-size="13" fill="currentColor">
+    <text x="205" y="134" font-weight="600">réseau = la rue</text>
+    <text x="430" y="134" font-weight="600" style="fill:var(--accent)">machine = le n°</text>
+  </g>
+</svg>`
+    }, {
+      legende: "Chez toi, les adresses sont privées (192.168.1.x) et ne sortent jamais. Ton PC et ta box sont dans la même rue, donc ils se parlent directement. Pour aller ailleurs, tout passe par la passerelle, ta box, qui parle à internet avec une seule IP publique pour toute la maison (le NAT).",
+      svg: `<svg viewBox="0 0 720 280" role="img" aria-label="Réseau domestique : le PC et un autre appareil ont des IP privées 192.168.1.x ; la box est la passerelle et possède une IP privée .254 et une IP publique unique ; elle relie la maison à internet, où se trouve Picard en 51.91.60.233.">
+  <defs><marker id="fl-ip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="20" y="30" width="390" height="230" rx="14" stroke-dasharray="6 5" opacity=".6"/>
+    <rect x="50" y="70" width="140" height="56" rx="8"/>
+    <rect x="50" y="170" width="140" height="56" rx="8"/>
+    <rect x="320" y="110" width="170" height="76" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="570" y="110" width="135" height="76" rx="38"/>
+    <line x1="190" y1="104" x2="318" y2="136" marker-end="url(#fl-ip)"/>
+    <line x1="190" y1="192" x2="318" y2="164" marker-end="url(#fl-ip)"/>
+    <line x1="490" y1="148" x2="568" y2="148" marker-end="url(#fl-ip)" marker-start="url(#fl-ip)"/>
+    <line x1="120" y1="126" x2="120" y2="170" stroke-dasharray="3 3" marker-end="url(#fl-ip)" marker-start="url(#fl-ip)"/>
+  </g>
+  <g fill="currentColor" text-anchor="middle" font-size="13">
+    <text x="215" y="22" font-size="12" opacity=".8">CHEZ TOI · réseau 192.168.1.x · adresses privées</text>
+    <text x="120" y="93" font-weight="600">Ton PC</text><text x="120" y="112" font-size="11" opacity=".75">192.168.1.94</text>
+    <text x="120" y="193" font-weight="600">Ton téléphone</text><text x="120" y="212" font-size="11" opacity=".75">192.168.1.?</text>
+    <text x="405" y="134" font-weight="600" style="fill:var(--accent)">Ta box = passerelle</text>
+    <text x="405" y="153" font-size="11" opacity=".8">dedans : 192.168.1.254</text>
+    <text x="405" y="170" font-size="11" opacity=".8">dehors : 1 IP publique</text>
+    <text x="637" y="142" font-weight="600">Internet</text><text x="637" y="160" font-size="11" opacity=".75">Picard 51.91.60.233</text>
+    <text x="530" y="138" font-size="11">NAT</text>
+    <text x="150" y="152" font-size="11" text-anchor="start" opacity=".75">même rue : direct</text>
+  </g>
+</svg>`
+    }],
+    probleme: "Des milliards d'appareils s'envoient des messages et des requêtes. Il faut que chacun ait une adresse, et que cette adresse permette de trouver le chemin jusqu'à lui.",
+    analogie: "L'adresse postale : le nom de la rue (le réseau) plus le numéro de la maison (la machine). Les appareils d'une même rue se parlent directement. Pour une autre rue, on passe par la sortie du quartier : la passerelle.",
+    schema:
+`<span class="p">192 . 168 . 1 . 94</span>      4 nombres de 0 à 255 (8 bits chacun = 256 valeurs)
+ └──── réseau ────┘ └ machine    ← coupure donnée par le masque 255.255.255.0
+
+IPv4 : environ 4,3 milliards d'adresses → pas assez pour tout le monde
+  → <span class="n">IP privées</span>  (192.168.x.x…) : réutilisées dans chaque maison, ne sortent jamais
+  → <span class="n">IP publique</span> : une seule par box, unique au monde (NAT)
+  → <span class="n">IPv6</span> (fe80::…) : la version moderne, des adresses beaucoup plus longues`,
+    exemple:
+`<span class="p">C:\\Users\\ROG&gt;</span> ipconfig
+Adresse IPv4. . . . . . . . : 192.168.1.94     <span class="n">← mon PC (adresse privée)</span>
+Masque de sous-réseau. . . .: 255.255.255.0    <span class="n">← 192.168.1 = ma rue, .94 = mon numéro</span>
+Passerelle par défaut. . . .: fe80::2266:…%13  <span class="n">← ma box, en IPv6</span>
+                              192.168.1.254    <span class="n">← ma box, en IPv4 : ma sortie vers internet</span>`,
+    exempleNote: "La même box apparaît deux fois : une adresse IPv6 et une adresse IPv4. Ce sont deux versions du protocole, pas deux appareils.",
+    pieges: [
+      ["« L'IP est unique pour chaque objet connecté à internet. »", "Seule l'IP publique est unique. 192.168.1.94 est une adresse privée : ton voisin a sûrement la même chez lui."],
+      ["« Les 3 premiers nombres = le réseau, le 4e = la machine. »", "Vrai seulement avec le masque 255.255.255.0. C'est le masque qui décide où passe la coupure (on le verra avec le calcul de sous-réseau)."],
+      ["« La passerelle, c'est ma box avec une adresse plus complexe. »", "Le format complexe (fe80::…), c'est l'IPv6 de la box. Son adresse IPv4 est juste en dessous : 192.168.1.254."],
+      ["✏️ Tes pièges du 11/11 : « Une adresse qui commence au-dessus de 170 est privée. »", "Règle inventée, à oublier. Il y a trois plages exactes : 10.x.x.x, 172.16 à 172.31, 192.168.x.x. Dans l'essai, 10.4.2.1 a été dite publique (elle est privée) et 172.40.1.1 privée (elle est publique). Voir la fiche « À savoir par cœur »."],
+      ["✏️ « Chaque machine a plusieurs adresses MAC, une par composant. »", "Une adresse MAC par carte réseau (Wi-Fi, Ethernet), pas par composant. L'IP dit dans quel réseau est la machine ; la MAC dit à quelle prise la livrer, dans ce réseau. Elle ne sort jamais du réseau local."],
+      ["Serveur et site, ce n'est pas pareil.", "Le serveur est la machine, le site est ce qu'elle sert. Un serveur peut héberger plusieurs sites, et un site peut être réparti sur plusieurs serveurs (un CDN comme Cloudflare)."]
+    ],
+    enplus: "<p><b>Le NAT, c'est l'accueil d'un hôtel.</b> Les chambres ont des numéros internes (les IP privées) ; l'hôtel a une seule adresse postale (l'IP publique). L'accueil (la box) met l'adresse de l'hôtel comme expéditeur sur chaque lettre et note dans un registre (la table NAT) quelle chambre a écrit à qui, grâce à un numéro de port. Quand la réponse arrive, il la remonte à la bonne chambre. Vérifié en séance : <code>curl.exe ifconfig.me</code> affiche l'adresse publique de la box, pas celle du PC. La box a deux faces : 192.168.1.254 dedans, l'IP publique dehors. Bonus sécurité : une connexion venue de dehors que personne n'a demandée n'est pas dans le registre, donc la box la jette.</p><p><b>Pourquoi un serveur a aussi un nom ?</b> Un nom de domaine n'est qu'une étiquette posée sur une adresse IP, et n'importe quelle machine peut en avoir une. Les sites en sont l'usage le plus connu, mais les administrateurs nomment aussi leurs machines pour s'y retrouver : <code>eole2.iptwins.com</code>, c'est « la machine Eole n° 2 d'IP Twins ». Comme chez Picard, où le magasin a une enseigne pour les clients, mais où la chambre froide a aussi son étiquette pour les techniciens.</p>",
+    questions: [
+      ["Ton PC (192.168.1.94, masque 255.255.255.0) veut joindre 192.168.1.254, puis 51.91.60.233. Lequel en direct, lequel par la passerelle ?",
+       "192.168.1.254 en direct, car c'est la même rue (192.168.1). 51.91.60.233 par la passerelle, car c'est une autre rue."],
+      ["Mise en situation : ton voisin a lui aussi un PC en 192.168.1.94. Est-ce que ça pose un problème ?",
+       "Non. Ce sont des adresses privées, qui ne sortent jamais de chaque maison. Sur internet, chaque box parle avec sa propre IP publique (le NAT)."],
+      ["Piège : 192.168.1.300 est-elle une adresse IPv4 valide ?",
+       "Non. Chaque nombre tient sur 8 bits, donc il va de 0 à 255 au maximum."]
+    ],
+    liens: "TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiche liée : Le DNS."
+  },
+  {
+    id: "http", module: "1 · Réseau", niveau: "M", titre: "Client-serveur, HTTP et HTML",
+    date: "08/11/2026",
+    regle: "HTTP, ce sont les règles de la communication pour les échanges sur le web : comment le client demande (GET /page) et comment le serveur répond (200 OK + le contenu). Le HTML est le document renvoyé : il décrit la page, le navigateur l'affiche. Ce qui s'exécute, c'est le JavaScript.",
+    figures: [{
+      legende: "Une seule page, quatre requêtes. Le navigateur demande d'abord le HTML. En le lisant, il découvre qu'il lui faut aussi le CSS et le JS, et il retourne les chercher. Le favicon, il le demande de lui-même : ici, le serveur ne l'a pas (404), et il n'y a simplement pas d'icône dans l'onglet.",
+      svg: `<svg viewBox="0 0 720 330" role="img" aria-label="Échange HTTP entre le navigateur et le serveur : GET / renvoie 200 et le HTML ; le HTML fait demander style.css et script.js, qui renvoient 200 ; favicon.ico renvoie 404.">
+  <defs><marker id="fl-http" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  <marker id="fl-http-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+  <marker id="fl-http-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--piege)"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="20" y="20" width="150" height="60" rx="8"/>
+    <rect x="550" y="20" width="150" height="60" rx="8"/>
+    <line x1="95" y1="80" x2="95" y2="320" stroke-dasharray="3 4" opacity=".5"/>
+    <line x1="625" y1="80" x2="625" y2="320" stroke-dasharray="3 4" opacity=".5"/>
+    <line x1="97" y1="110" x2="621" y2="110" marker-end="url(#fl-http)"/>
+    <line x1="623" y1="140" x2="99" y2="140" style="stroke:var(--accent)" stroke-width="2.5" marker-end="url(#fl-http-a)"/>
+    <line x1="97" y1="190" x2="621" y2="190" marker-end="url(#fl-http)"/>
+    <line x1="623" y1="210" x2="99" y2="210" style="stroke:var(--accent)" marker-end="url(#fl-http-a)"/>
+    <line x1="97" y1="240" x2="621" y2="240" marker-end="url(#fl-http)"/>
+    <line x1="623" y1="260" x2="99" y2="260" style="stroke:var(--accent)" marker-end="url(#fl-http-a)"/>
+    <line x1="97" y1="290" x2="621" y2="290" marker-end="url(#fl-http)"/>
+    <line x1="623" y1="310" x2="99" y2="310" style="stroke:var(--piege)" stroke-dasharray="5 4" marker-end="url(#fl-http-p)"/>
+    <rect x="240" y="152" width="240" height="26" rx="6" stroke-dasharray="4 3" opacity=".7"/>
+  </g>
+  <g fill="currentColor" text-anchor="middle" font-size="13">
+    <text x="95" y="46" font-weight="600">Navigateur</text><text x="95" y="65" font-size="11" opacity=".75">le client : il demande</text>
+    <text x="625" y="46" font-weight="600">Serveur</text><text x="625" y="65" font-size="11" opacity=".75">il attend et répond</text>
+    <text x="360" y="104" font-family="IBM Plex Mono, Consolas, monospace" font-size="12">① GET /</text>
+    <text x="360" y="134" font-family="IBM Plex Mono, Consolas, monospace" font-size="12" font-weight="600" style="fill:var(--accent)">② 200 OK + le HTML (le planogramme)</text>
+    <text x="360" y="170" font-size="11">le HTML contient &lt;link style.css&gt; &lt;script script.js&gt;</text>
+    <text x="360" y="184" font-family="IBM Plex Mono, Consolas, monospace" font-size="12">③ GET /style.css</text>
+    <text x="360" y="205" font-family="IBM Plex Mono, Consolas, monospace" font-size="12" style="fill:var(--accent)">200 · l'apparence</text>
+    <text x="360" y="234" font-family="IBM Plex Mono, Consolas, monospace" font-size="12">④ GET /script.js</text>
+    <text x="360" y="255" font-family="IBM Plex Mono, Consolas, monospace" font-size="12" style="fill:var(--accent)">200 · le comportement</text>
+    <text x="360" y="284" font-family="IBM Plex Mono, Consolas, monospace" font-size="12">⑤ GET /favicon.ico (de lui-même)</text>
+    <text x="360" y="305" font-family="IBM Plex Mono, Consolas, monospace" font-size="12" style="fill:var(--piege)">404 Not Found · pas d'icône, pas grave</text>
+  </g>
+</svg>`
+    }, {
+      bd: true,
+      legende: "Une requête HTTPS complète, en petite BD (clique sur une case pour l'agrandir). Règle : adresse, porte, question, réponse, contenu. L'employée = le navigateur ; l'entrepôt = le serveur ; le planogramme = le HTML. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
+      photos: [
+        { img: "images/bd-http-1.jpg", titre: "1. L'annuaire", texte: "Le DNS donne l'adresse de picard.fr : 51.91.60.233. Juste l'adresse, sans numéro de porte.", credit: "Nano Banana Pro", alt: "Une employée en tablier bleu marine montre dans un grand livre ANNUAIRE (DNS) la ligne surlignée picard.fr → 51.91.60.233." },
+        { img: "images/bd-http-2.jpg", titre: "2. La porte n° 443", texte: "Connexion au port 443 : elle frappe à la bonne porte de l'entrepôt, qui s'ouvre (le cadenas = HTTPS). On ouvre la porte avant de parler.", credit: "Nano Banana Pro", alt: "Devant un entrepôt marqué 51.91.60.233, avec des portes 22, 80 et 443, l'employée frappe à la porte 443 au cadenas doré, son bon de commande à la main." },
+        { img: "images/bd-http-3.jpg", titre: "3. Le bon de commande", texte: "GET / : c'est elle qui parle en premier, elle demande la page.", credit: "Nano Banana Pro", alt: "Au comptoir de l'entrepôt, l'employée tend un bon de commande GET au magasinier barbu en gilet vert ; une bulle avec un point d'interrogation." },
+        { img: "images/bd-http-4.jpg", titre: "4. Le bon de livraison tamponné", texte: "200 OK et les en-têtes : le magasinier répond « livré OK ». Une réponse vient toujours après la question.", credit: "Nano Banana Pro", alt: "Dans l'entrepôt, le magasinier tamponne un bon 200 OK et le tend à l'employée ; une bulle avec une coche verte ; un carton fermé sur le comptoir." },
+        { img: "images/bd-http-5.jpg", titre: "5. Le planogramme dans le carton", texte: "Le HTML arrive dans le corps de la réponse : elle le lit et met en rayon. Le navigateur affiche la page.", credit: "Nano Banana Pro", alt: "De retour au magasin, l'employée ouvre le carton, tient un plan coloré marqué HTML et range des produits surgelés ; le bon 200 OK est collé sur le carton." }
+      ]
+    }, {
+      legende: "✏️ La poignée de main vue dans Packet Tracer (mission du 12/11). Trois messages pour ouvrir la ligne, puis seulement la vraie demande. Le PC choisit lui-même son port (son ticket : 1025, puis 1026 au rechargement…) ; le serveur répond à ce port, en inversant Src et Dst.",
+      svg: `<svg viewBox="0 0 720 400" role="img" aria-label="Poignée de main TCP entre le PC, port 1028, et le serveur, port 80 : SYN, SYN-ACK, ACK, puis GET, puis 200 OK et le HTML, puis FIN pour fermer.">
+  <defs><marker id="fl-tcp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  <marker id="fl-tcp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="20" y="20" width="170" height="60" rx="8"/><rect x="530" y="20" width="170" height="60" rx="8"/>
+    <line x1="105" y1="80" x2="105" y2="390" stroke-dasharray="3 4" opacity=".5"/><line x1="615" y1="80" x2="615" y2="390" stroke-dasharray="3 4" opacity=".5"/>
+    <line x1="107" y1="115" x2="611" y2="115" style="stroke:var(--accent)" marker-end="url(#fl-tcp-a)"/>
+    <line x1="613" y1="165" x2="109" y2="165" style="stroke:var(--accent)" marker-end="url(#fl-tcp-a)"/>
+    <line x1="107" y1="215" x2="611" y2="215" style="stroke:var(--accent)" marker-end="url(#fl-tcp-a)"/>
+    <line x1="20" y1="238" x2="700" y2="238" opacity=".35"/>
+    <line x1="107" y1="285" x2="611" y2="285" marker-end="url(#fl-tcp)"/>
+    <line x1="613" y1="325" x2="109" y2="325" marker-end="url(#fl-tcp)"/>
+    <line x1="109" y1="375" x2="611" y2="375" stroke-dasharray="6 4" opacity=".6" marker-end="url(#fl-tcp)" marker-start="url(#fl-tcp)"/>
+  </g>
+  <g fill="currentColor" font-size="13" text-anchor="middle">
+    <text x="105" y="47" font-weight="600" font-size="15">Le PC</text><text x="105" y="67" opacity=".75">port client 1028</text>
+    <text x="615" y="47" font-weight="600" font-size="15">Le serveur</text><text x="615" y="67" opacity=".75">port serveur 80</text>
+    <text x="360" y="107" font-weight="600" style="fill:var(--accent)">① SYN · « tu m'entends ? »</text><text x="360" y="132" font-size="11" opacity=".75">Src 1028 → Dst 80</text>
+    <text x="360" y="157" font-weight="600" style="fill:var(--accent)">② SYN-ACK · « oui, et toi ? »</text><text x="360" y="182" font-size="11" opacity=".75">Src 80 → Dst 1028</text>
+    <text x="360" y="207" font-weight="600" style="fill:var(--accent)">③ ACK · « oui » → ligne ouverte (ESTABLISHED)</text>
+    <text x="360" y="255" font-size="11" opacity=".75">poignée de main finie : maintenant, la vraie conversation</text>
+    <text x="360" y="277" font-weight="600">④ GET /</text>
+    <text x="360" y="317" font-weight="600">⑤ 200 OK + en-têtes + le HTML (dans le corps)</text>
+    <text x="360" y="367" font-weight="600" opacity=".8">⑥ FIN · « on raccroche »</text>
+  </g>
+</svg>`
+    }],
+    probleme: "Pour afficher une page qui se trouve sur un autre ordinateur, il faut une règle commune pour demander (« donne-moi cette page ») et pour répondre (« la voici » ou « je ne l'ai pas »). Sans HTTP, chaque site inventerait sa façon de faire, et aucun navigateur ne pourrait parler à tous les serveurs.",
+    analogie: "Le planogramme de Picard : il donne la position des éléments, mais c'est l'employé qui les range. HTTP = le camion et le bon de livraison (« livré OK » ou « introuvable ») ; HTML = le planogramme dans le carton ; le navigateur = l'employé qui lit le plan et met en rayon. Version Godot : HTML = le .tscn (chargé), CSS = le Theme, JS = le .gd (exécuté).",
+    schema:
+`<span class="p">F</span>  je tape http://httpdemo.local:8080
+<span class="p">E</span>  DNS : nom → IP                         <span class="c">(d'abord : pas de colis sans adresse)</span>
+   connexion au port (80 ou 443)          <span class="c">(on ouvre la porte avant de parler)</span>
+<span class="p">B</span>  GET /           ──► serveur
+<span class="p">C</span>  200 OK + HTML   ◄── serveur
+<span class="p">D</span>  le HTML réclame style.css et script.js → nouvelles requêtes GET
+<span class="p">A</span>  le navigateur affiche (HTML + CSS), le JS gère les clics
+
+Codes de statut : on retient la <span class="n">famille</span> (le 1er chiffre)
+  <span class="n">2xx</span> ça a marché        200 OK
+  <span class="n">3xx</span> va voir ailleurs    301 déménagé
+  <span class="n">4xx</span> c'est TA faute      404 introuvable · 403 interdit · 401 identifie-toi
+  <span class="n">5xx</span> c'est SA faute      500 le serveur a planté
+Méthodes : <span class="n">GET</span> = donne-moi (lire) · <span class="n">POST</span> = prends ça (envoyer un formulaire)`,
+    exemple:
+`<span class="p">C:\\Users\\ROG&gt;</span> curl.exe -i http://example.com
+HTTP/1.1 200 OK                       <span class="n">← 1re ligne : version + code de statut</span>
+Content-Type: text/html; charset=utf-8 <span class="n">← le colis contient du HTML</span>
+Server: cloudflare                    <span class="n">← passe par le CDN Cloudflare</span>
+CF-RAY: a5758badd8391412-MRS          <span class="n">← MRS = centre Cloudflare de Marseille</span>
+cf-cache-status: HIT                  <span class="n">← servi depuis le cache</span>
+                                      <span class="n">← LIGNE VIDE = fin des en-têtes HTTP</span>
+&lt;!doctype html&gt;&lt;html&gt;…&lt;style&gt;…&lt;/style&gt;…&lt;script src=/s.js&gt;…   <span class="n">← le corps : le HTML</span>`,
+    exempleNote: "Sur TryHackMe (Client-Server Basics), l'onglet Network des outils de développement (F12) montre la même chose dans le navigateur. L'en-tête y affichait <code>Server: SimpleHTTP/0.6 Python/3.12.3</code> : logiciel + version exacte, donc une fuite d'information, puisqu'on peut chercher les failles connues de cette version. <code>Server: cloudflare</code> ne révèle ni le logiciel réel ni sa version.",
+    pieges: [
+      ["« 404 = le serveur n'a pas répondu. »", "Il a bien répondu : « introuvable ». C'est une erreur de la requête (4xx). « Refusé », c'est 403."],
+      ["« HTTP, c'est la requête. »", "Ce sont les règles de toute la conversation, la requête et la réponse. Le « 200 OK » est lui-même du HTTP."],
+      ["« Le HTML est du code que le navigateur exécute. »", "Il décrit la page, comme un .tscn dans Godot. Ce qui s'exécute, c'est le JS (le .gd). Test : sans script.js, la page s'affiche quand même, seul le bouton ne fait plus rien."],
+      ["« Dans HTTP/1.1 200 OK, 200 est un port. »", "C'est le code de statut, toujours sur la 1re ligne. Un « :443 » dans un en-tête, ça, c'est un port."],
+      ["« Plein de 404 depuis une même IP, c'est quelqu'un qui se trompe. »", "C'est un robot qui scanne (énumération de chemins). Le 200 au milieu = la porte trouvée ouverte → à traiter en premier."],
+      ["« Le navigateur envoie GET, puis le DNS trouve l'IP. »", "L'inverse : le DNS passe toujours en premier."],
+      ["✏️ Ton piège du 11/11 (revenu en séance 7) : « Je reçois une confirmation de connexion du type 200. »", "Le 200 n'est jamais une confirmation de connexion. Au restaurant : s'asseoir = la connexion au port 443, commander = GET /, être servi = 200 OK + le HTML. Et ce n'est pas le serveur qui affiche la page : il envoie le HTML, le navigateur l'affiche."],
+      ["✏️ Tes pièges du 12/11 (séance 8) : « le PC envoie une requête HTTPS » au moment de la connexion, sans dire le port.", "D'abord la connexion au port 443 (c'est la poignée de main), ensuite seulement la requête : le GET."],
+      ["✏️ « Le serveur répond ACK, puis le PC envoie SYN-ACK avec le GET. »", "SYN = une question, ACK = un oui. SYN (PC) → SYN-ACK (serveur : oui + sa question) → ACK (PC : oui). Le GET part après, tout seul : il n'est pas dans la poignée de main."],
+      ["✏️ « C'est le serveur qui donne le numéro de port 1028. »", "C'est le PC qui choisit son port client (son ticket), dès le SYN, comme l'adresse de l'expéditeur au dos d'une enveloppe. Le serveur répond à cette IP et à ce port : Src et Dst s'inversent dans la réponse."],
+      ["« Le serveur répond 200 OK, puis le navigateur envoie GET. »", "Le 200 est une réponse : il arrive toujours après la question. L'ordre complet pour https://picard.fr : DNS (l'IP seule) → connexion au port 443 → GET / → 200 OK + en-têtes → le HTML dans le corps. Retiens : adresse, porte, question, réponse, contenu."]
+    ],
+    enplus: "<p><b>Le lien sécurité.</b> Tout le HTML et le JS arrivent chez le client, qui peut tout lire (clic droit → Afficher le code source) : jamais de mot de passe ni de secret dedans, même en HTTPS (le HTTPS protège le trajet, pas le contenu une fois arrivé). Le JS est le vecteur des attaques XSS (OWASP Top 10, à venir). Dans les journaux d'un serveur, une rafale de 404 depuis la même IP (/admin, /.env, /backup.zip…) est la signature d'un outil d'énumération comme Gobuster : un analyste SOC repère ce motif, et cherche surtout le 200 qui le suit.</p><p><b>✏️ La poignée de main TCP (12/11).</b> Avant tout GET, TCP ouvre la ligne en trois messages : SYN, SYN-ACK, ACK. Elle vérifie que les deux machines s'entendent dans les deux sens avant d'envoyer des données : c'est ce qui rend TCP fiable. C'est elle, la « connexion au port 443 » (ou 80) de l'ordre d'une requête. En HTTPS, un court échange de plus met en place le chiffrement avant le GET (à voir plus tard). Le serveur reconnaît chaque connexion par quatre éléments ensemble : IP et port du client, IP et port du serveur. Deux PC peuvent donc utiliser le même port client. Derrière une box, c'est le NAT qui donne à chaque connexion son propre port côté Internet.</p><p><b>Niveaux.</b> Rôle client/serveur, GET/POST et familles de codes : Maîtriser (question classique d'admission). Écrire du HTML/CSS : à déléguer à l'IA, mais il faut savoir le lire et repérer ce qui cloche.</p>",
+    questions: [
+      ["Explique à un collègue de Picard la différence entre HTTP et HTML, avec le planogramme.",
+       "HTTP, c'est le camion et le bon de livraison : les règles pour demander et livrer, avec un statut (« livré OK » = 200, « introuvable » = 404). HTML, c'est le planogramme dans le carton : il décrit où va chaque élément. Le navigateur, c'est l'employé qui lit le plan et met en rayon."],
+      ["Mise en situation : dans les journaux du site, une IP fait 404 /admin, 404 /.env, 404 /backup.zip, puis 200 /old-admin/. Que se passe-t-il, et quelle ligne traiter en premier ?",
+       "Un scan automatique (énumération de chemins) : un robot teste une liste de pages cachées. La ligne à traiter en premier est le 200 /old-admin/ : l'attaquant a trouvé une ancienne page d'administration oubliée et accessible."],
+      ["Piège : « Mon site est en HTTPS, donc je peux laisser le mot de passe admin en commentaire dans le HTML, personne ne le verra. » Vrai ou faux ?",
+       "Faux. HTTPS chiffre le trajet, mais le HTML arrive en clair dans le navigateur du visiteur, qui peut lire tout le code source."],
+      ["✏️ Donne les messages entre l'ouverture de la connexion et la page, avec qui les envoie.",
+       "SYN (le PC : tu m'entends ?), SYN-ACK (le serveur : oui, et toi ?), ACK (le PC : oui), puis GET / (le PC), puis 200 OK + le HTML (le serveur). À la fin, FIN pour fermer."],
+      ["Piège : un serveur répond 500. C'est la faute de qui ? Et pour un 403 ?",
+       "500 : la faute du serveur (5xx = il a planté). 403 : la requête est refusée, l'accès est interdit (4xx = côté client)."]
+    ],
+    liens: "TryHackMe · Pre Security, module 2 « Computer Fundamentals » → Client-Server Basics ; module 6 « How The Web Works » (à venir). Fiches liées : Le DNS, L'adresse IP."
+  },
+  {
+    id: "box", module: "1 · Réseau", niveau: "M", titre: "La box, le switch, le routeur",
+    date: "09/11/2026",
+    regle: "Le PC applique son masque à sa propre adresse et à l'adresse de destination, puis compare les deux parties réseau. Identiques : il envoie directement, et le switch remet le message. Différentes : il envoie à sa passerelle (le routeur), qui fait passer le message dans l'autre réseau.",
+    figures: [{
+      legende: "L'image du postier. La rue = le réseau (192.168.1). Le facteur = le switch : il remet chaque lettre à la bonne maison, sans jamais quitter sa rue. Le bureau de poste au bout de la rue = le routeur : le seul qui envoie le courrier vers une autre rue (192.168.2) ou vers Internet. Illustration générée pour ce classeur (Nano Banana Pro).",
+      img: "images/analogie-postier.webp", alt: "Deux rues de maisons numérotées ; dans la première, un facteur à vélo marqué SWITCH remet une lettre ; au bout, un bureau de poste marqué ROUTEUR envoie une lettre vers la deuxième rue et vers le nuage Internet."
+    }, {
+      bd: true,
+      legende: "Le trajet dans la box, en petite BD (clique sur une case pour l'agrandir). Règle : de l'intérieur vers l'extérieur, du plus proche de toi au plus proche de l'opérateur. C'est la lettre qui voyage, pas l'habitant : le téléphone reste chez lui. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
+      photos: [
+        { img: "images/bd-box-1.jpg", titre: "1. La boîte aux lettres devant la maison", texte: "La borne Wi-Fi : le téléphone y dépose sa demande par radio, sans câble. C'est l'appareil le plus proche, donc le premier.", credit: "Nano Banana Pro", alt: "L'habitant en salopette, téléphone en main, glisse une lettre dans une boîte aux lettres bleue munie d'une antenne, panneau BORNE WI-FI ; des ondes radio vont du téléphone à la boîte." },
+        { img: "images/bd-box-2.jpg", titre: "2. Le bureau de poste", texte: "Le routeur lit l'adresse : « pas dans notre rue », et décide que ça sort. Il décide, il ne traduit pas.", credit: "Nano Banana Pro", alt: "Dans un bureau de poste marqué ROUTEUR, une guichetière lit l'enveloppe à la loupe et montre du doigt une porte SORTIE." },
+        { img: "images/bd-box-3.jpg", titre: "3. Le quai de chargement", texte: "Le modem met la lettre dans le sac du camion de l'opérateur, au format de la route. Il traduit, il ne décide rien. C'est la dernière porte de la maison.", credit: "Nano Banana Pro", alt: "Sur un quai marqué MODEM, un employé en casquette range l'enveloppe dans un sac gris à éclair, à l'arrière d'un camion ouvert." },
+        { img: "images/bd-box-4.jpg", titre: "4. L'autoroute", texte: "L'opérateur et Internet : le camion roule jusqu'à la ville du serveur YouTube.", credit: "Nano Banana Pro", alt: "Un camion gris à éclair roule sur une autoroute sous un portique INTERNET ; au loin, une ville avec un drapeau rouge en forme de bouton lecture." },
+        { img: "images/bd-box-5.jpg", titre: "5. Le studio répond", texte: "Le serveur YouTube renvoie la vidéo, qui fait le même chemin à l'envers : modem, routeur, borne Wi-Fi, téléphone.", credit: "Nano Banana Pro", alt: "Devant un studio marqué SERVEUR, un employé tend un colis avec une bobine de film au chauffeur du camion ; en bas, des icônes camion, bureau de poste, boîte aux lettres, téléphone, reliées par des flèches vers le téléphone." }
+      ]
+    }, {
+      legende: "Le vrai matériel. Le switch a beaucoup de prises, une par appareil, et ses voyants verts disent « câble branché, ça marche » (comme les points verts de Packet Tracer). Le routeur en a peu : il relie quelques réseaux entre eux. Le modem, posé dessus, est un appareil à part : il traduit pour la ligne de l'opérateur. Chez toi, la box range tout ça dans un seul boîtier.",
+      photos: [
+        { img: "images/photo-switch.webp", alt: "Un switch Cisco Catalyst 2960-S dans une baie, ses prises remplies de câbles jaunes, voyants verts allumés.", titre: "Switch (Cisco 2960-S)", credit: "Dmitry Grigoriev, CC BY 2.0, Wikimedia Commons" },
+        { img: "images/photo-routeur-modem.webp", alt: "Un routeur Cisco série 1900 dans une baie, avec un modem DM991CE posé dessus.", titre: "Routeur (Cisco 1900) et modem posé dessus", credit: "Maraguache, CC BY-SA 4.0, Wikimedia Commons" },
+        { img: "images/photo-box.webp", alt: "Une Livebox d'Orange vue de face, avec ses boutons Wi-Fi et WPS.", titre: "Box (Livebox) = modem + routeur + switch + Wi-Fi", credit: "Poudou99, CC BY-SA 4.0, Wikimedia Commons" }
+      ]
+    }, {
+      legende: "Le trajet d'une demande YouTube depuis ton téléphone. Chaque étape de la conversation (le DNS d'abord, puis HTTP) fait tout ce trajet, aller et retour.",
+      svg: `<svg viewBox="0 0 760 210" role="img" aria-label="Trajet : téléphone, borne Wi-Fi, routeur, modem, opérateur, Internet, serveur YouTube ; la borne, le routeur et le modem sont dans la box.">
+  <defs><marker id="fl-box" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <rect x="120" y="30" width="400" height="120" rx="12" fill="none" stroke="currentColor" stroke-dasharray="6 5" opacity=".55"/>
+  <text x="320" y="22" text-anchor="middle" font-size="12" fill="currentColor" opacity=".8">LA BOX</text>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="10" y="62" width="90" height="56" rx="8"/>
+    <rect x="140" y="62" width="110" height="56" rx="8"/>
+    <rect x="270" y="62" width="110" height="56" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="400" y="62" width="100" height="56" rx="8"/>
+    <rect x="560" y="62" width="80" height="56" rx="28"/>
+    <rect x="665" y="62" width="85" height="56" rx="8"/>
+    <line x1="100" y1="90" x2="138" y2="90" marker-end="url(#fl-box)"/>
+    <line x1="250" y1="90" x2="268" y2="90" marker-end="url(#fl-box)"/>
+    <line x1="380" y1="90" x2="398" y2="90" marker-end="url(#fl-box)"/>
+    <line x1="500" y1="90" x2="558" y2="90" marker-end="url(#fl-box)"/>
+    <line x1="640" y1="90" x2="663" y2="90" marker-end="url(#fl-box)"/>
+  </g>
+  <g text-anchor="middle" font-size="13" fill="currentColor">
+    <text x="55" y="95" font-weight="600">Téléphone</text>
+    <text x="195" y="88" font-weight="600">Borne Wi-Fi</text><text x="195" y="106" font-size="11" opacity=".75">même rue</text>
+    <text x="325" y="88" font-weight="600" style="fill:var(--accent)">Routeur</text><text x="325" y="106" font-size="11" opacity=".75">décide : ça sort</text>
+    <text x="450" y="88" font-weight="600">Modem</text><text x="450" y="106" font-size="11" opacity=".75">traduit</text>
+    <text x="600" y="95" font-weight="600">Internet</text>
+    <text x="707" y="88" font-weight="600">YouTube</text><text x="707" y="106" font-size="11" opacity=".75">serveur</text>
+    <text x="380" y="185" font-size="12" opacity=".85">① DNS : adresse de youtube.com ?   ② port 443   ③ GET /   ④ 200 OK + HTML</text>
+  </g>
+</svg>`
+    }],
+    probleme: "À l'intérieur d'une rue, il faut remettre chaque message à la bonne maison sans déranger les autres : c'est le travail du switch. Mais il ne sait pas sortir de la rue. Pour aller vers une autre rue, un autre réseau ou Internet, il faut un appareil qui relie des réseaux différents : le routeur.",
+    analogie: "Le postier. La rue = le réseau. Le facteur de la rue = le switch (il ne quitte jamais sa rue). Le bureau de poste au bout de la rue = le routeur, la passerelle. L'adresse sur l'enveloppe = l'adresse IP de destination. La consigne du postier (« la rue, ce sont les 3 premiers nombres ») = le masque. L'annuaire = le DNS.",
+    schema:
+`<span class="p">Switch</span>      remet chaque paquet à la bonne machine, <span class="n">dans le même réseau</span>
+<span class="p">Routeur</span>     relie des réseaux différents ; vu depuis un PC = <span class="n">la passerelle</span>
+<span class="p">Modem</span>       traduit le signal pour la ligne de l'opérateur ; il ne décide rien
+<span class="p">Borne Wi-Fi</span> un switch sans fil
+<span class="p">Box</span>         modem + routeur + switch + borne Wi-Fi dans un seul boîtier
+
+<span class="p">Réseau</span> (sens IP) = les machines qui ont la même partie réseau → elles se parlent sans routeur
+Internet = des milliers de réseaux reliés par des routeurs (un réseau de réseaux)`,
+    exemple:
+`<span class="p">Packet Tracer · mission A</span> (montée seul, vérifiée par le MCP) : 3 PC sur un switch 2960, masque 255.255.255.0
+PC0 192.168.1.10 → ping 192.168.1.20   Reply… (4 reçus sur 4)   <span class="n">← même rue + câble : ça marche</span>
+PC2 passé en 192.168.2.30, <b>toujours branché sur le même switch</b>
+PC0 → ping 192.168.2.30                Request timed out (0 sur 4) <span class="n">← autre rue, et pas de routeur</span>`,
+    exempleNote: "Le câble est obligatoire, mais il ne suffit pas. Pour joindre PC2 sans changer son adresse, il faut ajouter un routeur ET régler la passerelle par défaut sur PC0 (192.168.1.1) et sur PC2 (192.168.2.1). C'est la mission B.",
+    pieges: [
+      ["« Le switch distribue la connexion » ou « répartit la bande passante ».", "Phrase de publicité. Le switch transmet les messages (les paquets) : il détermine quel paquet va à quelle machine, dans le même réseau."],
+      ["« Pour aller sur YouTube, c'est le modem qui travaille. »", "Le modem traduit, mais c'est le routeur qui décide que le message sort du réseau. Le routeur décide, le modem traduit."],
+      ["« Le DNS passe après la requête HTTP. »", "Toujours avant : sans adresse IP, impossible d'envoyer la requête. On ne poste pas une lettre sans l'adresse."],
+      ["« Il suffit d'ajouter un routeur, rien à régler sur le PC. »", "Il faut aussi la passerelle par défaut sur chaque PC, sinon il a un message pour une autre rue et personne à qui le donner."],
+      ["Dépannage : chercher la passerelle alors que deux appareils sont côte à côte.", "Lire d'abord les adresses, ensuite choisir l'outil. Tablette 192.168.10.5 et imprimante 192.168.11.80 : une faute de frappe, pas un switch mort."],
+      ["« Les masques sont identiques. »", "On ne compare pas les masques : on compare les parties réseau des deux adresses."],
+      ["« L'adresse IP est représentée par le masque. »", "Deux choses séparées. L'adresse existe sans le masque ; le masque dit seulement quelle partie est la rue. Et il n'est pas toujours 255.255.255.0 : avec /16, seuls les 2 premiers nombres forment la rue."],
+      ["« Pour aller au routeur, le switch ne sert à rien. »", "Le routeur est branché sur le switch : le message passe toujours par le switch avant d'atteindre le routeur."],
+      ["✏️ Tes pièges du 11/11 (séance 7) : la borne Wi-Fi placée après le modem, « la borne fait appel au FAI », puis le routeur et le modem inversés.", "La borne Wi-Fi est la porte côté maison, le modem la porte côté rue. Règle de logique : d'abord on décide (le routeur lit les IP et décide que ça sort), ensuite on traduit pour le câble de la rue (le modem). Et ne pas oublier l'opérateur et Internet entre la box et le serveur."],
+      ["✏️ « Le switch compare les parties réseau des adresses IP. »", "Non : c'est le PC qui compare, avec son masque. Le switch ne lit que l'adresse MAC et transmet à la bonne prise. Le PC décide, le switch livre (mission Packet Tracer « Qui bloque ? » du 11/11)."],
+      ["✏️ Tes pièges du 12/11 (séance 8) : « le switch se repère avec le masque ».", "Le masque, c'est le PC (il décide). Le switch de couche 2 se repère avec les adresses MAC et livre chaque paquet à la bonne prise."],
+      ["✏️ « Le PC fixe en Ethernet va directement au routeur. »", "Le câble entre par une prise de la box, c'est-à-dire son switch intégré. Seule l'entrée change (switch pour le câble, borne Wi-Fi pour la radio) ; la sortie est toujours routeur, puis modem."],
+      ["« Le téléphone passe d'abord par le modem. »", "Non : téléphone → borne Wi-Fi → routeur → modem → opérateur. Le téléphone parle par radio à l'appareil le plus proche, la borne. Le modem est la dernière porte, celle qui donne sur la ligne de l'opérateur. Retiens : je parle (borne), je décide (routeur), je traduis (modem), je sors."]
+    ],
+    enplus: "<p><b>Pourquoi les entreprises ont plusieurs réseaux avec un seul abonnement Internet.</b> Un réseau n'est pas un abonnement : c'est un groupe d'adresses. On découpe souvent une entreprise en plusieurs réseaux (la compta, les ateliers, le Wi-Fi des clients) reliés par un routeur, pour la sécurité : un virus arrivé dans un réseau n'atteint pas directement les autres. C'est la base des VLAN, que tu verras plus tard.</p><p><b>✏️ Switch de couche 2 ou de couche 3 (12/11, TryHackMe Extending Your Network, tâche 5).</b> Le switch classique, de <b>couche 2</b>, se repère avec les <b>adresses MAC</b> et livre à la bonne prise, dans le même réseau. Le switch de <b>couche 3</b> fait la même chose <b>et route</b> entre des réseaux différents, grâce aux <b>adresses IP</b> : il a une adresse dans chaque réseau, et c'est lui, la passerelle de chaque PC. Ce n'est pas un routeur : le switch de couche 3 relie les services à l'intérieur de l'entreprise (beaucoup de prises, très rapide), le routeur est à la sortie vers Internet (NAT, opérateur, pare-feu). Les « couches », c'est le modèle OSI (étape 4). En résumé : PC → masque et passerelle (il décide) · switch couche 2 → MAC (il livre) · switch couche 3 ou routeur → IP (il route).</p>",
+    questions: [
+      ["Explique à un collègue la différence entre un switch et un routeur, sans dire « distribuer la connexion ».",
+       "Le switch remet chaque message à la bonne machine à l'intérieur d'un même réseau. Le routeur relie des réseaux différents : c'est la porte de sortie (la passerelle)."],
+      ["Mise en situation : ton PC (192.168.1.20/24) n'a pas de passerelle. Il imprime sur 192.168.1.50, mais n'atteint pas Internet. Pourquoi ?",
+       "L'imprimante est dans la même rue : le PC lui parle directement. Internet est dans un autre réseau : il faut la passerelle, et la case est vide, donc le PC ne sait pas à qui confier le message."],
+      ["✏️ Mise en situation : la compta (192.168.1.0/24) et l'entrepôt (192.168.2.0/24) doivent s'échanger des fichiers. Le patron veut tout brancher sur un switch classique. Ça suffit ?",
+       "Non : un switch de couche 2 ne relie que le même réseau. Il faut un appareil qui route : un switch de couche 3 ou un routeur, avec une adresse dans chaque réseau, réglée comme passerelle sur chaque PC."],
+      ["Piège : deux PC sont branchés sur le même switch mais ne se pingent pas. « Le switch est mort » : vrai ?",
+       "Pas forcément. D'abord, lire les adresses et le masque : s'ils ne sont pas dans le même réseau, le switch n'y peut rien. Ensuite, vérifier si les autres appareils du switch marchent."]
+    ],
+    liens: "Packet Tracer · missions A (faite le 09/11) et B (faite le 10/11, voir la fiche suivante). TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiches liées : L'adresse IP, Le DNS, Le routeur et la passerelle."
+  },
+  {
+    id: "routeur", module: "1 · Réseau", niveau: "M", titre: "Le routeur et la passerelle par défaut",
+    date: "10/11/2026",
+    regle: "La passerelle par défaut, c'est l'adresse du routeur dans mon réseau : ma porte de sortie. Elle a la même partie réseau que le PC, et c'est une adresse privée. Quand la destination n'est pas dans son réseau, le PC confie le paquet à sa passerelle. Chaque machine en a besoin pour ENVOYER hors de son réseau : un ping est un aller et un retour, il faut donc une passerelle des deux côtés.",
+    figures: [{
+      bd: true,
+      legende: "L'analogie en petite BD, à lire case par case (clique sur une case pour l'agrandir). L'habitant = le PC ; le facteur = le switch ; le bureau de poste = le routeur ; le post-it sur le frigo = la passerelle. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
+      photos: [
+        { img: "images/bd-passerelle-1.jpg", titre: "1. Dans la même rue", texte: "Le facteur (le switch) remet la lettre directement au voisin : même réseau, pas besoin de passerelle.", credit: "Nano Banana Pro", alt: "Rue 192.168.1 : un facteur à vélo, brassard SWITCH, remet une lettre à la voisine de la maison 2 ; l'habitant de la maison 1 salue." },
+        { img: "images/bd-passerelle-2.jpg", titre: "2. Pour une autre rue ?", texte: "La lettre est pour la rue 192.168.2. Le facteur ne quitte jamais sa rue, et l'habitant ne sait pas à qui la confier.", credit: "Nano Banana Pro", alt: "L'habitant, perplexe, tient sa lettre avec un point d'interrogation ; le facteur hausse les épaules ; au loin, un panneau vert Rue 192.168.2." },
+        { img: "images/bd-passerelle-3.jpg", titre: "3. Le post-it sur le frigo", texte: "L'adresse du bureau de poste de SA rue est notée chez lui : c'est la passerelle par défaut (192.168.1.1).", credit: "Nano Banana Pro", alt: "Dans sa cuisine, l'habitant montre un post-it jaune sur le frigo : « Bureau de poste : 192.168.1.1 », une ampoule au-dessus de la tête." },
+        { img: "images/bd-passerelle-4.jpg", titre: "4. Le bureau de poste", texte: "Le routeur a une porte (une adresse) sur chaque rue : il reçoit la lettre côté 192.168.1.1 et la fait sortir côté 192.168.2.1.", credit: "Nano Banana Pro", alt: "Un bureau de poste marqué ROUTEUR au carrefour, une porte 192.168.1.1 côté rue bleue et une porte 192.168.2.1 côté rue verte ; l'habitant donne sa lettre au guichetier, une flèche part vers la rue verte." },
+        { img: "images/bd-passerelle-5.jpg", titre: "5. La réponse", texte: "Pour répondre, le destinataire passe lui aussi par le bureau de poste de SA rue (192.168.2.1). Sans cette adresse, sa réponse resterait chez lui.", credit: "Nano Banana Pro", alt: "Un homme barbu en pull vert tend sa réponse à la porte 192.168.2.1 du même bureau de poste ; une flèche pointillée repart vers la rue bleue 192.168.1." }
+      ]
+    }, {
+      legende: "La mission B, montée dans Packet Tracer le 10/11. Le routeur a une adresse dans chaque réseau : c'est pour ça qu'il peut servir de porte de sortie aux deux. Chaque PC prend comme passerelle l'adresse du routeur qui est dans SON réseau. Le compteur TTL perd 1 en traversant le routeur (128 → 127).",
+      svg: `<svg viewBox="0 0 760 270" role="img" aria-label="Deux réseaux : PC0 et PC1 en 192.168.1 sur Switch0, PC2 et PC3 en 192.168.2 sur Switch1, reliés par un routeur 2911 qui a l'adresse 192.168.1.1 d'un côté et 192.168.2.1 de l'autre.">
+  <defs><marker id="fl-rt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <rect x="8" y="20" width="300" height="175" rx="12" fill="none" stroke="currentColor" stroke-dasharray="6 5" opacity=".5"/>
+  <rect x="452" y="20" width="300" height="175" rx="12" fill="none" stroke="currentColor" stroke-dasharray="6 5" opacity=".5"/>
+  <g text-anchor="middle" font-size="12" fill="currentColor" opacity=".85">
+    <text x="158" y="14">RÉSEAU 192.168.1.0 /24 (« bureau »)</text>
+    <text x="602" y="14">RÉSEAU 192.168.2.0 /24 (« entrepôt »)</text>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="22" y="42" width="120" height="50" rx="8"/>
+    <rect x="22" y="122" width="120" height="50" rx="8"/>
+    <rect x="182" y="82" width="100" height="50" rx="8"/>
+    <rect x="618" y="42" width="120" height="50" rx="8"/>
+    <rect x="618" y="122" width="120" height="50" rx="8"/>
+    <rect x="478" y="82" width="100" height="50" rx="8"/>
+    <rect x="322" y="78" width="116" height="58" rx="29" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <line x1="142" y1="67" x2="182" y2="100"/>
+    <line x1="142" y1="147" x2="182" y2="115"/>
+    <line x1="618" y1="67" x2="578" y2="100"/>
+    <line x1="618" y1="147" x2="578" y2="115"/>
+    <line x1="282" y1="107" x2="322" y2="107"/>
+    <line x1="438" y1="107" x2="478" y2="107"/>
+  </g>
+  <g text-anchor="middle" font-size="13" fill="currentColor">
+    <text x="82" y="63" font-weight="600">PC0</text><text x="82" y="81" font-size="11">192.168.1.10</text>
+    <text x="82" y="143" font-weight="600">PC1</text><text x="82" y="161" font-size="11">192.168.1.20</text>
+    <text x="232" y="112" font-weight="600">Switch0</text>
+    <text x="678" y="63" font-weight="600">PC2</text><text x="678" y="81" font-size="11">192.168.2.10</text>
+    <text x="678" y="143" font-weight="600">PC3</text><text x="678" y="161" font-size="11">192.168.2.20</text>
+    <text x="528" y="112" font-weight="600">Switch1</text>
+    <text x="380" y="104" font-weight="600" style="fill:var(--accent)">Routeur</text><text x="380" y="121" font-size="11">2911</text>
+    <text x="330" y="160" font-size="11">Gi0/0</text><text x="330" y="174" font-size="11" font-weight="600">192.168.1.1</text>
+    <text x="430" y="160" font-size="11">Gi0/1</text><text x="430" y="174" font-size="11" font-weight="600">192.168.2.1</text>
+    <text x="158" y="214" font-size="12">passerelle de PC0 et PC1 : <tspan font-weight="600">192.168.1.1</tspan></text>
+    <text x="602" y="214" font-size="12">passerelle de PC2 et PC3 : <tspan font-weight="600">192.168.2.1</tspan></text>
+  </g>
+  <g stroke="currentColor" stroke-width="1.5" fill="none" opacity=".8">
+    <path d="M90,240 L670,240" marker-end="url(#fl-rt)"/>
+    <path d="M670,256 L90,256" marker-end="url(#fl-rt)"/>
+  </g>
+  <g font-size="11" fill="currentColor"><text x="96" y="235">aller : PC0 a besoin de SA passerelle</text><text x="470" y="268">retour : PC2 a besoin de SA passerelle</text></g>
+</svg>`
+    }, {
+      legende: "Le PC décide, le switch livre. Avant d'envoyer, le PC compare avec son masque et écrit deux adresses sur l'enveloppe. Le switch ne lit que la MAC. Sans passerelle, le PC n'a aucune MAC à écrire : il jette lui-même le paquet.",
+      svg: `<svg viewBox="0 0 700 250" role="img" aria-label="Le PC écrit sur l'enveloppe l'IP du serveur final et la MAC de la passerelle ; le switch lit seulement la MAC et livre au routeur.">
+  <defs><marker id="fl-pc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="20" y="40" width="150" height="70" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="275" y="40" width="150" height="70" rx="8"/>
+    <rect x="530" y="40" width="150" height="70" rx="8"/>
+    <line x1="170" y1="75" x2="273" y2="75" marker-end="url(#fl-pc)"/>
+    <line x1="425" y1="75" x2="528" y2="75" marker-end="url(#fl-pc)"/>
+    <rect x="150" y="145" width="400" height="88" rx="6"/>
+    <path d="M150,145 L350,195 L550,145" opacity=".5"/>
+  </g>
+  <g text-anchor="middle" fill="currentColor" font-size="14">
+    <text x="95" y="70" font-weight="600" style="fill:var(--accent)">PC : il DÉCIDE</text><text x="95" y="90" font-size="11" opacity=".8">compare avec son masque</text>
+    <text x="350" y="70" font-weight="600">Switch : il LIVRE</text><text x="350" y="90" font-size="11" opacity=".8">lit seulement la MAC</text>
+    <text x="605" y="70" font-weight="600">Routeur</text><text x="605" y="90" font-size="11" opacity=".8">la passerelle</text>
+  </g>
+  <g fill="currentColor" font-size="13" font-family="IBM Plex Mono, Consolas, monospace">
+    <text x="170" y="172">IP de destination  : le serveur final</text>
+    <text x="170" y="222" font-weight="600" style="fill:var(--accent)">MAC de destination : la passerelle</text>
+  </g>
+  <text x="350" y="24" text-anchor="middle" font-size="12" fill="currentColor" opacity=".8">la MAC de la passerelle, le PC l'a trouvée par ARP (« qui a 192.168.1.254 ? »)</text>
+</svg>`
+    }, {
+      bd: true,
+      legende: "BD « Le PC décide, le switch livre », à lire case par case (clique pour agrandir). Les mêmes personnages que la BD de la passerelle : l'habitant = le PC, le facteur = le switch, le bureau de poste = le routeur, le post-it = la passerelle par défaut. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
+      photos: [
+        { img: "images/bd-decide-1.jpg", titre: "1. Pas ma rue !", texte: "Avant d'envoyer, le PC compare avec son masque : la lettre est pour la rue 192.168.2, lui habite rue 192.168.1. C'est lui qui fait la comparaison, pas le facteur.", credit: "Nano Banana Pro", alt: "Dans sa cuisine, l'habitant en marinière et salopette tient une enveloppe « Rue 192.168.2 » et regarde la plaque « Rue 192.168.1 » de sa porte ; bulle « Pas ma rue ! »." },
+        { img: "images/bd-decide-2.jpg", titre: "2. Il écrit où la remettre", texte: "Il lit le post-it du frigo (la passerelle) et ajoute sur l'enveloppe « remettre à : bureau de poste ». L'adresse finale ne change pas (l'IP), mais il écrit à qui la remettre (la MAC de la passerelle, trouvée par ARP).", credit: "Nano Banana Pro", alt: "L'habitant, une ampoule au-dessus de la tête, écrit « Remettre à : bureau de poste » sur l'enveloppe ; sur le frigo, un post-it « Bureau de poste : 192.168.1.1 »." },
+        { img: "images/bd-decide-3.jpg", titre: "3. Le facteur livre", texte: "Le facteur (le switch) ne lit que la ligne « remettre à » et porte la lettre au bureau de poste. Il n'a rien décidé : il livre à l'adresse écrite.", credit: "Nano Banana Pro", alt: "Le facteur à vélo, brassard SWITCH, lit à la loupe la ligne « Remettre à : bureau de poste » et roule vers un bureau de poste marqué ROUTEUR." },
+        { img: "images/bd-decide-4.jpg", titre: "4. Sans post-it, il jette", texte: "Pas de passerelle : il n'a personne à qui remettre la lettre. C'est l'habitant qui la jette lui-même ; le facteur n'a jamais rien reçu. Packet Tracer : « The default gateway is not set. The device drops the packet. »", credit: "Nano Banana Pro", alt: "Le frigo sans post-it ; l'habitant jette l'enveloppe à la poubelle ; dehors, le facteur attend, les mains vides." }
+      ]
+    }, {
+      bd: true,
+      legende: "BD « Le ping et le service », en 3 cases. Le ping dit seulement si la machine est joignable ; le site est un service, derrière une autre porte (le port 443). Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
+      photos: [
+        { img: "images/bd-ping-1.jpg", titre: "1. Toc toc : on est là", texte: "Le ping (ICMP) : on frappe, quelqu'un répond. La machine est joignable. C'est tout ce que ça prouve.", credit: "Nano Banana Pro", alt: "Devant un restaurant à l'adresse 51.91.60.233, un client frappe (« PING ») ; le serveur moustachu ouvre : « Oui, on est là ! »." },
+        { img: "images/bd-ping-2.jpg", titre: "2. La cuisine est fermée", texte: "Le ping a répondu, mais le service sur le port 443 est arrêté : pas de plat, pas de site.", credit: "Nano Banana Pro", alt: "À l'intérieur, la porte « Porte 443 · Cuisine » porte un panneau « Fermé » ; le client, déçu, devant une assiette vide." },
+        { img: "images/bd-ping-3.jpg", titre: "3. On ne répond pas au toc-toc", texte: "Le pare-feu bloque le ping, mais le restaurant tourne : pas de réponse au ping ne veut pas dire « éteint ».", credit: "Nano Banana Pro", alt: "Personne n'ouvre ; une pancarte « On ne répond pas au toc-toc » ; par la vitrine, la salle est pleine de clients servis." }
+      ]
+    }],
+    probleme: "Le switch transmet les paquets entre les machines d'un même réseau, mais il ne sait pas en sortir. Pour relier des réseaux différents, il faut un routeur : il a une interface (une adresse) dans chaque réseau, et fait passer les paquets de l'un à l'autre. Encore faut-il que chaque PC sache à qui confier ce qui doit sortir : c'est la passerelle par défaut.",
+    analogie: "Le postier, en ajoutant l'habitant. L'habitant = le PC. Même rue : le facteur (le switch) remet la lettre au voisin. Autre rue : la lettre passe par le bureau de poste du quartier (le routeur). L'adresse du bureau de poste, notée sur le frigo = la passerelle ; le bureau est dans sa rue. Sans elle, la lettre reste à la maison. Et si le destinataire ne l'a pas non plus, il ne peut pas répondre.",
+    schema:
+`<span class="p">Passerelle</span>  l'adresse du routeur <span class="n">dans mon réseau</span> = ma porte de sortie (adresse privée)
+<span class="p">Routeur</span>     une interface dans chaque réseau ; ports <span class="n">éteints par défaut</span> (Port Status On)
+<span class="p">Le PC</span>       masque → partie réseau de sa adresse et de la destination → compare
+            identiques : envoie directement · différentes : <span class="n">confie à sa passerelle</span>
+<span class="p">Ping</span>        aller ET retour → une passerelle des DEUX côtés
+<span class="p">TTL</span>         compteur de vie du paquet : -1 à chaque routeur, jeté à 0 (128 → 127)
+<span class="p">ARP</span>         « qui est 192.168.1.1 ? » : la 1re fois, le 1er ping est souvent perdu`,
+    exemple:
+`<span class="p">Packet Tracer · mission B</span> (montée seul, vérifiée par le MCP)
+Sans passerelle :      PC0 → PC1   Reply (4/4)          <span class="n">← même réseau</span>
+                       PC0 → PC2   Request timed out    <span class="n">← personne à qui confier le paquet</span>
+Passerelle sur PC0 :   PC0 → PC2   Request timed out    <span class="n">← arrive, mais PC2 ne peut pas répondre</span>
+  Simulation, sur PC2 : « The default gateway is not set. The device drops the packet. »
+Passerelle partout :   PC0 → PC3   Reply TTL=127 (3/4)  <span class="n">← 1er paquet perdu = l'ARP</span>`,
+    exempleNote: "Le réflexe qui a manqué ce soir-là : avant d'accuser la commande ou de renuméroter, ouvrir IP Configuration et lire les trois cases (adresse, masque, passerelle). Sur un vrai PC Windows : ipconfig.",
+    pieges: [
+      ["« La passerelle a une adresse publique et privée. »", "Le routeur a les deux en permanence, une face côté maison, une côté Internet. La passerelle réglée sur le PC, c'est l'adresse privée, côté réseau local."],
+      ["Le ping échoue : changer de commande, ou renuméroter les PC.", "Lire la configuration d'abord (IP Configuration, ipconfig), émettre des hypothèses ensuite. Renuméroter supprime le problème au lieu de le résoudre."],
+      ["« Sans passerelle, le PC ne peut pas recevoir. »", "Il reçoit (le routeur le livre dans son réseau). Il ne peut pas ENVOYER hors de son réseau : c'est sa réponse qui est abandonnée."],
+      ["Relier deux réseaux avec un Wireless Router (une box).", "Ses prises sont un switch intégré : tout ce qu'on y branche est dans le même réseau. Il faut un vrai routeur, avec une interface dans chaque réseau."],
+      ["Après un redémarrage, le routeur a tout oublié.", "Sa configuration est en mémoire vive : il faut l'enregistrer (Config → Settings → NVRAM : Save), sinon elle est perdue."],
+      ["« Le switch distribue les paquets. »", "Le switch TRANSMET. « Distribuer » est le mot réflexe à remplacer, le jury l'entend comme une erreur."],
+      ["✏️ Ton piège du 11/11 (trois fois en séance 7) : « Le switch transmet au routeur quand il ne peut pas livrer. »", "C'est le PC qui décide, avant d'envoyer : autre réseau, donc il écrit la MAC de la passerelle sur l'enveloppe (trouvée par ARP). Le switch la porte jusqu'à la prise du routeur parce que c'est écrit dessus. Sans passerelle, le PC jette lui-même le paquet : « The default gateway is not set. The device drops the packet. »"],
+      ["✏️ « Le ping est une tentative de connexion. »", "Un ping est un simple message ICMP (demande d'écho, réponse d'écho), sans connexion ni port. Il prouve que la machine est joignable, pas que ses services (le site sur le port 443) marchent."]
+    ],
+    enplus: "<p><b>Capsule d'histoire : pourquoi « ping » ?</b> Le programme a été écrit en décembre 1983 par Mike Muuss, programmeur au laboratoire de recherche de l'armée américaine, qui l'a nommé d'après le bruit du sonar. Mais contrairement au sonar, rien ne « rebondit » : la cible reçoit une demande d'écho (echo request) et doit fabriquer et envoyer elle-même une réponse (echo reply). D'où le besoin d'une passerelle des deux côtés.</p>",
+    questions: [
+      ["Qu'est-ce que la passerelle par défaut ? Quelle adresse y met-on, privée ou publique, et pourquoi ?",
+       "L'adresse du routeur dans mon réseau, ma porte de sortie. Une adresse privée, avec la même partie réseau que le PC : un PC ne peut atteindre directement que les adresses de son propre réseau."],
+      ["Mise en situation : PC0 a sa passerelle, PC2 non. Le ping de PC0 vers PC2 arrive-t-il à PC2 ? Pourquoi échoue-t-il quand même ?",
+       "Oui, il arrive : le routeur a une interface dans le réseau de PC2 et le lui livre. Mais PC2 doit répondre à un autre réseau, et sans passerelle il ne sait pas à qui confier sa réponse : il l'abandonne."],
+      ["Piège : un collègue relie deux réseaux avec une box et ses 4 prises. Pourquoi ça ne crée pas deux réseaux ?",
+       "Les prises d'une box sont un switch intégré : tout est dans le même réseau. Pour deux réseaux, il faut un routeur avec une interface (une adresse) dans chacun."]
+    ],
+    liens: "Packet Tracer · mission B (mission-B.pkt, faite le 10/11). TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiches liées : La box, le switch, le routeur ; L'adresse IP."
+  },
+  {
+    id: "depanner", module: "1 · Réseau", niveau: "M", titre: "Dépanner en 4 étages (ipconfig, ping, nslookup, curl)",
+    date: "13/11/2026, complétée le 14/11",
+    regle: "Chaque étage a besoin de celui d'en dessous : le DNS a besoin du réseau, le site a besoin du DNS. On part donc du bas : ma machine (ipconfig) → le réseau, avec une IP (ping) → les noms (nslookup) → le service (curl, le navigateur). Le premier étage qui échoue, c'est la panne : les échecs au-dessus ne sont que des ricochets.",
+    figures: [{
+      legende: "La check-list, dans l'ordre. Pour chaque étage : la commande, à qui elle parle, et le message qu'on lit quand ça casse. On monte d'un étage seulement si celui du dessous marche.",
+      svg: `<svg viewBox="0 0 760 330" role="img" aria-label="Quatre étages empilés. 1, ma machine : ipconfig, parle à personne, échec : pas de passerelle ou adresse en 169.254. 2, le réseau : ping vers la passerelle puis 8.8.8.8, échec : délai d'attente dépassé. 3, les noms : nslookup, parle au résolveur, échec : pas d'adresse, ou impossible de trouver l'hôte. 4, le service : curl ou le navigateur, parle au serveur web, échec : failed to connect, le SYN sans SYN-ACK.">
+  <defs><marker id="fl-et" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="70" y="10" width="670" height="68" rx="8"/>
+    <rect x="70" y="86" width="670" height="68" rx="8"/>
+    <rect x="70" y="162" width="670" height="68" rx="8"/>
+    <rect x="70" y="238" width="670" height="68" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <path d="M32,300 L32,24" marker-end="url(#fl-et)"/>
+  </g>
+  <text x="22" y="170" font-size="12" fill="currentColor" transform="rotate(-90 22 170)" text-anchor="middle">on commence en bas, on monte</text>
+  <g fill="currentColor" font-size="15" font-weight="600">
+    <text x="86" y="38">4 · Le service</text><text x="86" y="114">3 · Les noms</text><text x="86" y="190">2 · Le réseau</text><text x="86" y="266" style="fill:var(--accent)">1 · Ma machine</text>
+  </g>
+  <g fill="currentColor" font-size="13" font-family="IBM Plex Mono, Consolas, monospace">
+    <text x="250" y="38">curl -I https://www.site.fr</text><text x="250" y="114">nslookup site.fr</text><text x="250" y="190">ping 192.168.1.254 · ping 8.8.8.8</text><text x="250" y="266">ipconfig /all</text>
+  </g>
+  <g fill="currentColor" font-size="12" opacity=".85">
+    <text x="86" y="62">parle au serveur web · échec : « Failed to connect » (SYN parti, SYN-ACK jamais revenu)</text>
+    <text x="86" y="138">parle au résolveur · échec : pas d'adresse ; le ping dit « impossible de trouver l'hôte »</text>
+    <text x="86" y="214">parle à une IP, sans les noms · échec : « Délai d'attente de la demande dépassé »</text>
+    <text x="86" y="290">ne parle à personne · échec : pas de passerelle, adresse en 169.254.x.x, ou DNS Servers inattendu</text>
+  </g>
+</svg>`
+    }, {
+      bd: true,
+      legende: "BD « Le premier étage qui échoue, c'est la panne », en 4 cases (clique pour agrandir). Le technicien monte les étages un par un ; quand un étage est cassé, ceux du dessus s'éteignent aussi, par ricochet. Illustrations générées pour ce classeur, une case par image (case 1 : Nano Banana Pro ; cases 2 à 4 : Nano Banana 2.1, avec la case 1 en référence).",
+      photos: [
+        { img: "images/bd-etages-1.jpg", titre: "1. Ma machine", texte: "On commence en bas : ipconfig. L'adresse, le masque et la passerelle sont bons : coche verte, on monte.", credit: "Nano Banana Pro", alt: "Un technicien en sweat bleu marine, à genoux, vérifie un ordinateur et sa prise au rez-de-chaussée d'un immeuble en coupe ; plaques 1 Ma machine, 2 Le réseau, 3 Les noms, 4 Le service ; une coche verte au niveau 1." },
+        { img: "images/bd-etages-2.jpg", titre: "2. Le réseau", texte: "ping vers la passerelle, puis 8.8.8.8 : ça répond. Le réseau marche, sans même passer par les noms.", credit: "Nano Banana 2.1", alt: "Le technicien au niveau 2, Le réseau, écoute un combiné de téléphone qui répond ; coches vertes aux niveaux 1 et 2." },
+        { img: "images/bd-etages-3.jpg", titre: "3. La panne est ici", texte: "nslookup ne renvoie pas d'adresse : les noms ne se traduisent plus. C'est le premier étage qui échoue, donc c'est lui le coupable. L'étage 4 est éteint aussi, mais par ricochet.", credit: "Nano Banana 2.1", alt: "Niveaux 3 et 4 dans le noir ; au niveau 3, le technicien pointe un annuaire vide avec une loupe, bulle « La panne est ici », croix rouge ; coches vertes aux niveaux 1 et 2." },
+        { img: "images/bd-etages-4.jpg", titre: "4. Le 4 n'y était pour rien", texte: "On répare l'étage des noms, et tout se rallume, le service compris : il n'avait jamais été en panne.", credit: "Nano Banana 2.1", alt: "Le technicien rebranche un câble au niveau 3, bulle « Le 4 n'y était pour rien » ; les étages 3 et 4 sont rallumés, coches vertes aux quatre niveaux." }
+      ]
+    }, {
+      bd: true,
+      legende: "BD « La chaîne du DNS », en 6 cases (clique pour agrandir). Le résolveur ne possède pas l'annuaire : il va de guichet en guichet. La racine et le .fr ne donnent pas l'adresse, seulement le guichet suivant ; seul le dernier (celui qui fait autorité) a la réponse officielle. L'habitant = le PC ; la gardienne et son carnet = la box (le cache) ; le coursier = le résolveur du fournisseur d'accès. Illustrations générées pour ce classeur (Nano Banana 2.1), une case par image.",
+      photos: [
+        { img: "images/bd-dns-1.jpg", titre: "1. Pas dans mon carnet", texte: "Le PC demande picard.fr à la box. Elle n'a qu'un petit carnet des noms demandés récemment (le cache) : pas dedans.", credit: "Nano Banana 2.1", alt: "Dans le hall, l'habitant en marinière demande « picard.fr ? » à la gardienne, qui feuillette un petit carnet noir et secoue la tête." },
+        { img: "images/bd-dns-2.jpg", titre: "2. Le résolveur du fournisseur", texte: "La box passe la question, EN LIGNE, au résolveur de ton fournisseur d'accès. C'est lui qui fait la vraie recherche.", credit: "Nano Banana 2.1", alt: "La gardienne téléphone depuis sa loge ; dehors, un coursier en veste jaune badge FAI répond « Je m'en occupe » devant son scooter." },
+        { img: "images/bd-dns-3.jpg", titre: "3. La racine", texte: "La racine ne connaît pas l'adresse. Elle sait seulement qui s'occupe des noms en .fr.", credit: "Nano Banana 2.1", alt: "Le coursier devant un grand guichet ancien « Racine » ; l'employé moustachu pointe un autre guichet « .fr » : « Demande au .fr »." },
+        { img: "images/bd-dns-4.jpg", titre: "4. Le .fr", texte: "Les serveurs du .fr non plus : ils indiquent le serveur de picard.fr (chez son prestataire, IPTwins).", credit: "Nano Banana 2.1", alt: "Le coursier devant le guichet « .fr » ; l'employée pointe un petit bureau « picard.fr » : « Demande à picard.fr »." },
+        { img: "images/bd-dns-5.jpg", titre: "5. Celui qui fait autorité", texte: "Le serveur de picard.fr possède la page officielle : 51.91.60.233.", credit: "Nano Banana 2.1", alt: "Au guichet « picard.fr », une employée rousse tend au coursier une carte tamponnée « Officiel » : 51.91.60.233." },
+        { img: "images/bd-dns-6.jpg", titre: "6. Retour, et dans le carnet", texte: "L'adresse revient au PC. La box la recopie dans son carnet : la prochaine fois, elle répondra de mémoire (« ne faisant pas autorité »), jusqu'à expiration.", credit: "Nano Banana 2.1", alt: "Dans le hall, le coursier tend la carte ; la gardienne la recopie dans son carnet : « Je le note pour la prochaine fois » ; l'habitant sourit." }
+      ]
+    }, {
+      legende: "La chaîne du DNS, quand ni ta box ni ton fournisseur n'ont picard.fr en mémoire. Le résolveur ne possède pas l'annuaire : il va de guichet en guichet. La racine et le .fr ne donnent pas l'adresse, seulement le guichet suivant ; seul le serveur de picard.fr fait autorité. Au retour, chacun garde la réponse en mémoire un moment : la prochaine fois, elle « ne fait pas autorité ».",
+      svg: `<svg viewBox="0 0 760 330" role="img" aria-label="Chaîne du DNS : 1, mon PC demande picard.fr à ma box ; 2, la box, qui n'a qu'un cache, demande en ligne au résolveur du fournisseur d'accès ; 3, le résolveur demande à la racine, qui répond : demande au point fr ; 4, les serveurs du point fr répondent : demande au serveur de picard.fr ; 5, le serveur de picard.fr, chez IPTwins, qui fait autorité, répond 51.91.60.233 ; 6, l'adresse revient au PC et chacun la garde en mémoire.">
+  <defs><marker id="fl-dns" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="10" y="40" width="120" height="56" rx="8"/>
+    <rect x="170" y="40" width="130" height="56" rx="8"/>
+    <rect x="350" y="40" width="170" height="56" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="600" y="10" width="150" height="56" rx="8"/>
+    <rect x="600" y="120" width="150" height="56" rx="8"/>
+    <rect x="600" y="230" width="150" height="66" rx="8" stroke-width="2.5"/>
+    <line x1="130" y1="60" x2="168" y2="60" marker-end="url(#fl-dns)"/>
+    <line x1="300" y1="60" x2="348" y2="60" marker-end="url(#fl-dns)"/>
+    <path d="M520,52 L598,38" marker-end="url(#fl-dns)"/>
+    <path d="M520,68 L598,145" marker-end="url(#fl-dns)"/>
+    <path d="M520,84 L598,255" marker-end="url(#fl-dns)"/>
+    <path d="M600,272 C430,272 150,262 70,100" stroke-dasharray="6 5" marker-end="url(#fl-dns)"/>
+  </g>
+  <g text-anchor="middle" fill="currentColor" font-size="14" font-weight="600">
+    <text x="70" y="64">Mon PC</text><text x="235" y="64">Ma box</text><text x="435" y="64" style="fill:var(--accent)">Résolveur du FAI</text>
+    <text x="675" y="34">La racine</text><text x="675" y="144">Serveurs du .fr</text><text x="675" y="254">Serveur de picard.fr</text>
+  </g>
+  <g text-anchor="middle" fill="currentColor" font-size="11" opacity=".85">
+    <text x="70" y="84">« picard.fr ? »</text><text x="235" y="84">un cache, pas l'annuaire</text><text x="435" y="84">cherche pour toi, en ligne</text>
+    <text x="675" y="54">« demande au .fr »</text><text x="675" y="164">« demande à picard.fr »</text><text x="675" y="272">fait autorité (IPTwins)</text>
+    <text x="675" y="288" font-weight="600">51.91.60.233</text>
+  </g>
+  <g fill="currentColor" font-size="12" font-weight="600">
+    <text x="140" y="52">1</text><text x="315" y="52">2</text><text x="560" y="36">3</text><text x="560" y="104">4</text><text x="560" y="180">5</text><text x="300" y="320">6 · retour au PC, chacun garde l'adresse en mémoire</text>
+  </g>
+</svg>`
+    }],
+    probleme: "Sans méthode, on perd du temps, et surtout chaque essai au hasard change quelque chose : on peut créer une deuxième panne par-dessus la première, et si ça finit par marcher, on ne sait pas ce qui a réparé, donc on ne peut ni l'expliquer ni éviter que ça recommence. Avec un ordre fixe, chaque commande élimine une cause : on localise la panne au lieu de la deviner.",
+    analogie: "Le téléphone. Tu veux joindre la boulangerie Dupont. Les renseignements te donnent le numéro, sans que tu aies appelé personne d'autre : nslookup. Tu fais sonner pour voir si quelqu'un décroche, sans rien commander : ping. Tu passes vraiment commande et tu reçois la baguette (ou « on n'en a plus ») : curl.",
+    schema:
+`<span class="p">RÈGLE N° 1</span> une commande = UN étage : pour tester la route, on pingue une IP, jamais un nom
+<span class="p">ipconfig</span>   <span class="n">ma machine</span> : adresse, masque, passerelle (IP configuration)
+           ipconfig /all = en plus la ligne DNS Servers (le résolveur réglé), la MAC, le DHCP
+<span class="p">ping</span>       <span class="n">le réseau</span> : une machine répond-elle ? (ICMP, pas de poignée de main)
+<span class="p">nslookup</span>   <span class="n">les noms</span> : demande l'adresse d'un nom à un résolveur (name server lookup)
+           nslookup picard.fr 8.8.8.8 = demander à un AUTRE résolveur (le nom d'abord)
+<span class="p">curl</span>       <span class="n">le service</span> : la vraie demande HTTP, réponse brute (Client URL)
+           curl -I = seulement le statut et les en-têtes ; dans PowerShell : curl.exe
+<span class="p">Messages</span>   « impossible de trouver l'hôte » = le DNS · « délai dépassé » = personne ne répond
+           « Failed to connect … 443 » = SYN parti, SYN-ACK jamais revenu · 3xx = redirection`,
+    exemple:
+`<span class="p">Mon cas du 13/11, dans cmd</span>
+nslookup picard.fr            51.91.60.233        <span class="n">← le DNS marche (box)</span>
+nslookup picard.fr 8.8.8.8    51.91.60.233        <span class="n">← le DNS marche (Google)</span>
+curl -I https://picard.fr     Failed to connect to picard.fr port 443 after 21051 ms
+                                                  <span class="n">← SYN parti, pas de SYN-ACK : pas de GET</span>
+curl -I http://picard.fr      HTTP/1.1 301 Moved Permanently
+                              location: https://www.picard.fr/   <span class="n">← redirection</span>
+curl -I https://www.picard.fr HTTP/1.1 200 OK · Server: cloudflare <span class="n">← un autre nom, une autre adresse</span>`,
+    exempleNote: "Le navigateur fait tout ce chemin tout seul, sans qu'on le voie (port 80, redirection, nouveau DNS pour www, poignée de main). curl fait exactement ce qu'on lui demande, sans rien corriger : c'est pour ça qu'il sert à diagnostiquer. Et notre exemple de cours « picard.fr → 51.91.60.233:443 » était simplifié : la vraie vie, c'est www.",
+    pieges: [
+      ["✏️ « Le serveur répond ACK SYN… puis le PC répond SYN. » (récit long, deux séances de suite)", "Dans un récit, toujours le bloc complet : le client SYN, le serveur SYN-ACK, le client ACK. Au 3ᵉ message, le client ne pose plus de question."],
+      ["« Ne fait pas autorité = il n'a pas l'adresse en mémoire. »", "C'est l'inverse : le résolveur répond DE sa mémoire (son cache), pas le serveur officiel du domaine."],
+      ["« La ligne Serveur de nslookup, c'est mon routeur. »", "C'est vrai, mais son rôle sur cette ligne : le résolveur qui m'a répondu (ni mon PC, ni le site)."],
+      ["« Impossible de trouver l'hôte » : le serveur de Picard est en panne, ou il est à une autre adresse.", "Le nom n'a pas été traduit : c'est le DNS, et le PC n'a contacté aucun serveur. Je tape nslookup avant d'accuser le site. (Un 301, lui, vient du serveur, après un DNS qui a marché.)"],
+      ["Écarter le DNS alors que c'était la première idée.", "Si ma première idée suit la règle, je la teste avec une commande au lieu de l'écarter."],
+      ["« curl va ouvrir la page. »", "curl n'a pas d'écran graphique : il affiche la réponse en texte brut (avec -I, seulement le statut et les en-têtes)."],
+      ["« www.picard.fr et picard.fr, c'est pareil. »", "Deux noms de domaine différents, chacun avec son entrée DNS : ici, deux adresses et deux serveurs."],
+      ["✏️ « systeminfo » (« info config ») dans un dépannage réseau, deux fois.", "Chaque commande doit tester une hypothèse. systeminfo décrit le système, pas la connexion."],
+      ["✏️ « nslookup : j'observe si la poignée de main se passe bien. »", "nslookup pose une question au résolveur, c'est tout. La poignée de main se voit à l'étage du service (curl, navigateur)."],
+      ["✏️ 14/11 · ping picard.fr à l'étage du réseau (deux fois).", "J'aurais dû pinguer une adresse IP connue, comme 8.8.8.8. Règle n° 1 : une commande ne doit tester qu'un seul étage ; un nom ferait intervenir le DNS en plus."],
+      ["✏️ 14/11 · Chercher le DNS réglé avec ipconfig.", "J'aurais dû taper ipconfig /all : ipconfig seul n'affiche pas la ligne DNS Servers."],
+      ["✏️ 14/11 · Vouloir réparer la passerelle du serveur.", "La panne venait de la machine de ma collègue : l'adresse du DNS était mauvaise. Passerelle = par quelle porte je sors ; DNS Servers = à qui je demande les noms. Deux cases, deux rôles."],
+      ["✏️ 14/11 · nslookup picard.fr 8.8.8.8 marche, donc c'est réglé.", "Ça marchait parce que je contournais le problème : il fallait le corriger dans la configuration de la machine. Contourner ≠ réparer."],
+      ["✏️ 14/11 · « ping 8.8.8.8 échoue, donc c'est le DNS » (deux fois).", "La panne est à l'étage du réseau : on vise une IP, aucun nom à traduire. Je ne teste pas nslookup ensuite. Pour couper l'étage en deux : la passerelle d'abord (échoue → chez moi), puis 8.8.8.8 (échoue seul → au-delà de la box). Le DNS a besoin de la route ; la route n'a pas besoin du DNS."],
+      ["✏️ 14/11 · La chaîne du DNS sans la racine, et « l'hébergeur ».", "Le résolveur du FAI demande d'abord à la racine, qui fait autorité pour diriger vers le .fr. Le mot exact : le serveur qui fait autorité (pas l'hébergeur). Dans la BD : la gardienne = la box, le coursier = le résolveur du FAI, les guichets = les serveurs qui font autorité."]
+    ],
+    enplus: "<p><b>Capsule d'histoire : pourquoi ces noms ?</b> <b>ping</b> vient du sonar (Mike Muuss, décembre 1983) ; le sens « Packet InterNet Groper » a été inventé après coup. <b>nslookup</b> = <i>name server lookup</i>, « consulter un serveur de noms », né dans les années 1980 avec BIND, le serveur DNS de l'université de Berkeley ; le DNS lui-même date de 1983 (Paul Mockapetris) et a remplacé HOSTS.TXT, un fichier unique qui listait à la main tous les noms d'Internet. <b>ipconfig</b> = <i>IP configuration</i> (sous Linux : ifconfig, puis ip). <b>curl</b> = <i>Client URL</i> : Daniel Stenberg, un développeur suédois, voulait qu'un programme aille chercher tout seul des taux de change sur le Web ; première version sous ce nom en 1998, aujourd'hui présent dans des milliards d'appareils.</p><p><b>Le DNS n'est pas une machine, c'est un système.</b> Le résolveur (ta box, puis celui de ton fournisseur, ou 8.8.8.8 chez Google) cherche pour toi et retient les réponses un moment ; les serveurs qui font autorité (la racine, le .fr, puis celui de picard.fr) possèdent chacun leur page de l'annuaire, et rien d'autre.</p>",
+    questions: [
+      ["Pourquoi tester un ping vers une IP avant nslookup ?",
+       "Parce que le DNS a besoin du réseau. Si le réseau est cassé, nslookup échoue aussi, et on accuserait le DNS à tort. Le ping vers une IP teste le réseau seul, sans les noms."],
+      ["Mise en situation : ping 8.8.8.8 répond, ping picard.fr dit « impossible de trouver l'hôte ». Où est la panne, quelle commande le confirme, et à qui parle-t-elle ?",
+       "Le DNS : le nom n'est pas traduit. nslookup picard.fr, qui interroge le résolveur. Plan B : nslookup picard.fr 8.8.8.8, pour demander à un autre résolveur."],
+      ["Piège : curl répond « Failed to connect … port 443 ». Le DNS a-t-il échoué ? Le GET est-il parti ?",
+       "Non : curl avait l'adresse, le DNS a marché. Le SYN est parti, le SYN-ACK n'est jamais revenu : pas de connexion, donc pas de GET."],
+      ["Mise en situation (mission du 14/11) : nslookup picard.fr échoue (résolveur 8.8.4.4, timed-out), nslookup picard.fr 8.8.8.8 donne l'adresse, ping 8.8.8.8 répond. Le coupable, où le lis-tu, comment répares-tu ?",
+       "La case DNS Servers du PC : elle pointe vers un résolveur qui ne répond pas. On la lit avec ipconfig /all. On la corrige dans la configuration (pas de contournement), puis on prouve : nslookup picard.fr tout court, puis ping picard.fr."],
+      ["Mise en situation (mission 2 du 14/11) : la passerelle répond, ping 8.8.8.8 échoue, pour tous les PC du bureau. Quel étage ? Que fais-tu ?",
+       "L'étage du réseau, au-delà de la box : elle n'a plus Internet. Le DNS n'y est pour rien. Je regarde ses voyants, je la redémarre, puis j'appelle le FAI ; je ne touche à aucun PC."],
+      ["Diagnostiquer ou prouver : quand ping picard.fr est-il un bon test ?",
+       "Pour prouver une réparation : s'il réussit, la config, la route et le DNS marchent. Pour diagnostiquer, un étage à la fois (ping d'une IP)."]
+    ],
+    liens: "TryHackMe · Pre Security, module 3 « Operating Systems Basics » → Windows CLI Basics (faite le 13/11). Packet Tracer : packet-tracer/2026-11-14_mission-plus-internet.pkt et 2026-11-14_mission-2-plus-internet.pkt (14/11). Fiches liées : Le DNS ; Client-serveur, HTTP et HTML ; Le routeur et la passerelle par défaut."
+  }
+];
+// « À savoir par cœur » (demande d'Arnaud, 12/11/2026) : un intercalaire à part, avec un sous-dossier par module.
+// Pour ajouter un module : un objet ici (module = le même libellé que dans FICHES). Pour ajouter un point : une ligne dans un thème.
+const PAR_COEUR = [
+  {
+    module: "1 · Réseau", maj: "14/11/2026",
+    figures: [{
+      legende: "Les trois plages privées. Seuls ces débuts-là sont privés : tout le reste est public. Le piège est au milieu : en 172, seulement de 172.16 à 172.31.",
+      svg: `<svg viewBox="0 0 660 250" role="img" aria-label="Les trois plages d'adresses privées : 10 point n'importe quoi ; 172 point 16 à 31 ; 192 point 168. Tout le reste est public, par exemple 8.8.8.8 ou 172.40.1.1.">
+  <g font-family="IBM Plex Mono, Consolas, monospace" fill="currentColor" font-size="22">
+    <text x="30" y="52" font-weight="600" style="fill:var(--accent)">10</text><text x="62" y="52">. x . x . x</text>
+    <text x="30" y="112" font-weight="600" style="fill:var(--accent)">172</text><text x="78" y="112">.</text><text x="94" y="112" font-weight="600" style="fill:var(--accent)">16→31</text><text x="182" y="112">. x . x</text>
+    <text x="30" y="172" font-weight="600" style="fill:var(--accent)">192.168</text><text x="134" y="172">. x . x</text>
+  </g>
+  <g font-size="13" fill="currentColor">
+    <text x="330" y="44">ex. 10.4.2.1 → privée</text><text x="330" y="62" opacity=".7">la grande plage des entreprises</text>
+    <text x="330" y="104">ex. 172.20.5.5 → privée</text><text x="330" y="122" font-weight="600" style="fill:var(--accent)">piège : 172.40.1.1 → PUBLIQUE</text>
+    <text x="330" y="164">ex. 192.168.1.94 → privée</text><text x="330" y="182" opacity=".7">celle de ta box</text>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".5">
+    <line x1="20" y1="78" x2="640" y2="78"/><line x1="20" y1="138" x2="640" y2="138"/><line x1="20" y1="198" x2="640" y2="198"/>
+  </g>
+  <text x="30" y="230" font-size="15" font-weight="600" fill="currentColor">Tout le reste est public : 8.8.8.8 (le DNS de Google), 51.91.60.233 (picard.fr), 192.212.x.x…</text>
+</svg>`
+    }],
+    themes: [
+      { titre: "Les plages d'adresses privées", fiche: "ip", lignes: [
+        ["10.x.x.x", "Privée : la grande plage des entreprises (ex. 10.4.2.1)"],
+        ["172.16 → 172.31", "Privée, seulement de 16 à 31 (ex. 172.20.5.5). Piège : 172.40.1.1 est publique"],
+        ["192.168.x.x", "Privée : celle de ta box (ex. 192.168.1.94)"],
+        ["Tout le reste", "Public : 8.8.8.8 (DNS de Google), 51.91.60.233 (picard.fr), 192.212.x.x…"] ] },
+      { titre: "Les ports à connaître", fiche: "dns", lignes: [
+        ["20-21", "FTP : transférer des fichiers (l'ancien outil, en clair)"],
+        ["22", "SSH : se connecter au terminal d'une autre machine, en chiffré (Tatu Ylönen, 1995 : il a pris le 22, juste avant Telnet qu'il remplace)"],
+        ["23", "Telnet : l'ancêtre de SSH, tout en clair, mots de passe compris"],
+        ["53", "DNS : traduire un nom de domaine en adresse IP"],
+        ["80", "HTTP : le Web, en clair"],
+        ["443", "HTTPS : le Web, chiffré"] ] },
+      { titre: "Les codes HTTP", fiche: "http", lignes: [
+        ["200", "La demande a réussi : voici la page"],
+        ["301 (3xx)", "Redirection : c'est ailleurs, à l'adresse de la ligne location: (ex. http://picard.fr → https://www.picard.fr)"],
+        ["403", "La page existe, mais c'est interdit"],
+        ["404", "Rien à cette adresse"],
+        ["500", "Le serveur a planté en préparant la réponse"] ] },
+      { titre: "L'ordre d'une requête HTTPS", fiche: "http", lignes: [
+        ["1 · DNS", "Donne l'adresse IP, et rien d'autre (pas de port)"],
+        ["2 · Port 443", "Le PC se connecte (au restaurant : s'asseoir)"],
+        ["3 · GET /", "Le navigateur demande la page (commander)"],
+        ["4 · 200 OK", "Le serveur répond, avec ses en-têtes (être servi)"],
+        ["5 · Le corps", "Le HTML arrive ; le navigateur l'affiche"] ] },
+      { titre: "La poignée de main TCP", fiche: "http", lignes: [
+        ["SYN", "Une question : « tu m'entends ? » (le PC, vers le port du serveur)"],
+        ["SYN-ACK", "Un oui + sa propre question : « oui, et toi ? » (le serveur)"],
+        ["ACK", "Un oui : « je t'entends » (le PC) → la ligne est ouverte"],
+        ["Puis", "GET / (le PC), 200 OK + HTML (le serveur), FIN pour raccrocher"],
+        ["Port client", "Choisi par le PC (un ticket par connexion : 1025, 1026…) ; Src = qui envoie, Dst = qui reçoit"] ] },
+      { titre: "Dépanner en 4 étages (du bas vers le haut)", fiche: "depanner", lignes: [
+        ["La règle n° 1", "Une commande = UN étage : pour tester la route, on pingue une IP, jamais un nom"],
+        ["1 · ipconfig /all", "Ma machine : adresse, masque, passerelle, et la ligne DNS Servers (169.254.x.x = pas d'adresse reçue)"],
+        ["2 · ping une IP", "Le réseau sans les noms : la passerelle, puis 8.8.8.8"],
+        ["3 · nslookup nom", "Les noms : demande l'adresse à un résolveur (nslookup picard.fr 8.8.8.8 = un autre résolveur)"],
+        ["4 · curl -I url", "Le service : la vraie demande HTTP, réponse brute"],
+        ["La règle", "Le premier étage qui échoue, c'est la panne ; au-dessus, ce sont des ricochets"],
+        ["« Impossible de trouver l'hôte »", "Le DNS (le nom n'est pas traduit)"],
+        ["« Délai d'attente dépassé »", "L'adresse est trouvée, personne ne répond (serveur, ou pare-feu qui bloque le ping)"],
+        ["ping 8.8.8.8 échoue", "La ROUTE (étage 2), jamais le DNS : on vise une IP. Passerelle OK + 8.8.8.8 KO = au-delà de la box"],
+        ["nslookup échoue, 8.8.8.8 répond", "Le DNS : le résolveur réglé (ligne DNS Servers) ; plan B : nslookup nom 8.8.8.8, puis on CORRIGE la case"],
+        ["Prouver une réparation", "ping picard.fr : un succès prouve la config, la route et le DNS d'un coup"] ] },
+      { titre: "Comptes et droits", fiche: "depanner", lignes: [
+        ["root", "Le compte superutilisateur de Linux (l'Administrateur de Windows)"],
+        ["/ et /root", "/ = la racine du système de fichiers ; /root = le dossier personnel du compte root"],
+        ["Moindre privilège", "Chacun n'a que les droits nécessaires à son travail (least privilege)"],
+        ["Un programme…", "…tourne avec les droits de celui qui l'ouvre : en admin, il peut tout changer (le DNS compris)"],
+        ["UAC", "La fenêtre qui demande l'accord, ou un mot de passe admin, avant une modification du système"],
+        ["Résolveurs publics", "8.8.8.8 et 8.8.4.4 (Google), 1.1.1.1 (Cloudflare), 9.9.9.9 (Quad9)"] ] },
+      { titre: "La chaîne du DNS", fiche: "dns", lignes: [
+        ["1 · PC → box", "La box regarde dans sa mémoire (le cache)"],
+        ["2 · box → résolveur du FAI", "En ligne : c'est lui qui fait la vraie recherche"],
+        ["3 · → la racine", "Ne connaît pas l'adresse : indique les serveurs du .fr"],
+        ["4 · → le .fr", "Indique le serveur de picard.fr (IPTwins)"],
+        ["5 · → serveur de picard.fr", "Fait autorité : donne l'adresse officielle"],
+        ["6 · Retour", "Chacun la garde en mémoire un moment : la prochaine réponse « ne fait pas autorité »"] ] },
+      { titre: "Le trajet de la box", fiche: "box", lignes: [
+        ["1 · Borne Wi-Fi", "Capte l'onde du téléphone et transmet au routeur"],
+        ["2 · Routeur", "La passerelle : lit les IP et décide que le paquet sort"],
+        ["3 · Modem", "Traduit le paquet pour la ligne (fibre, ADSL) : la dernière porte"],
+        ["4 · Opérateur et Internet", "Acheminent jusqu'au serveur, qui répond par le même chemin à l'envers"],
+        ["En Ethernet", "Le câble entre par le switch (les prises de la box) au lieu de la borne ; ensuite, même sortie : routeur, modem"] ] },
+      { titre: "Qui fait quoi", fiche: "routeur", lignes: [
+        ["Le PC", "Décide : compare avec son masque, écrit l'IP finale et la MAC de la passerelle (trouvée par ARP)"],
+        ["Le switch", "Livre : lit seulement la MAC, transmet à la bonne prise"],
+        ["Switch couche 2 / 3", "Couche 2 = MAC, même réseau · couche 3 = en plus, route entre réseaux grâce aux IP (dans l'entreprise ; le routeur, lui, est à la sortie)"],
+        ["Sans passerelle", "Le PC jette lui-même le paquet vers un autre réseau"],
+        ["Adresse MAC", "Une par carte réseau ; elle ne sort jamais du réseau local"],
+        ["Internet / Web", "Les réseaux reliés / un service (les sites) qui passe dessus"],
+        ["Ping (ICMP)", "La machine est joignable ; ça ne dit rien du service (port 443)"] ] }
+    ],
+    pieges: [
+      ["✏️ « Au-dessus de 170, c'est privé. »", "Règle inventée. Seules les trois plages. 172.40.1.1 est publique, 10.4.2.1 est privée."],
+      ["✏️ « Port 53 = SSH. »", "53 = DNS, 22 = SSH. Fausse certitude du Mémo le 11/11, corrigée le soir même."],
+      ["✏️ « Je reçois une confirmation de connexion du type 200. »", "Le 200 répond au GET. La connexion au port 443 n'a pas de code 200."],
+      ["✏️ Routeur et modem inversés.", "On décide (routeur) avant de traduire pour le câble (modem)."],
+      ["✏️ « Le switch compare les adresses IP. »", "Le PC décide, le switch livre : trois fois en séance 7, priorité avant l'E1."],
+      ["✏️ « 10.83.186.61 est publique. » (12/11, à froid, comme dans le Mémo)", "Tout ce qui commence par 10 est privé, quels que soient les nombres suivants : c'est la plus grande des trois plages."],
+      ["✏️ « Le serveur répond ACK, puis SYN-ACK. »", "SYN = question, ACK = oui : SYN → SYN-ACK → ACK. Le GET vient après."],
+      ["✏️ « Le World Wide Web est composé de réseaux. »", "Ça, c'est Internet. Le Web est un service qui passe dessus ; le mail en est un autre."],
+      ["✏️ « DNS 20, SSH 23. » (entretien du 12/11, puis séance 9)", "DNS 53. SSH 22 ; le 23, c'est Telnet, l'ancêtre qu'il remplace ; le 20, c'est FTP."],
+      ["✏️ « Ne fait pas autorité = pas en mémoire. » (13/11)", "C'est l'inverse : la réponse vient DE la mémoire d'un résolveur."]
+    ]
+  }
+];
+const pcId = m => "par-coeur-" + m.split(" ")[0];   // "1 · Réseau" → par-coeur-1
+
+// Leçons prévues, affichées grisées dans le sommaire
+const A_VENIR = [
+  { module: "1 · Réseau", titre: "Ports, TCP et UDP", niveau: "M" }
+];
+
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const nbPoints = m => m.themes.reduce((s, t) => s + t.lignes.length, 0);
+const cur = (id, actif) => id === actif ? ' aria-current="page"' : "";
+
+function sommaire(actif) {
+  const modules = {};
+  FICHES.forEach(f => (modules[f.module] ||= []).push({ ...f, pret: true }));
+  A_VENIR.forEach(f => (modules[f.module] ||= []).push(f));
+  const total = PAR_COEUR.reduce((s, m) => s + nbPoints(m), 0);
+  const parCoeur = `<div class="module coeur"><h2>À savoir par cœur</h2>
+    <a href="#par-coeur"${cur("par-coeur", actif)}><span>Tous les modules</span><span class="niv">${total}</span></a>
+    ${PAR_COEUR.map(m => `<a href="#${pcId(m.module)}"${cur(pcId(m.module), actif)}><span>Module ${esc(m.module)}</span><span class="niv">${nbPoints(m)}</span></a>`).join("")}</div>`;
+  document.getElementById("intercalaires").innerHTML = parCoeur + Object.entries(modules).map(([m, liste]) => {
+    const pc = PAR_COEUR.find(x => x.module === m);
+    return `<div class="module"><h2>Module ${esc(m)}</h2>${liste.map(f => f.pret
+      ? `<a href="#${f.id}"${cur(f.id, actif)}><span>${esc(f.titre)}</span><span class="niv">${f.niveau}</span></a>`
+      : `<span class="avenir"><span>${esc(f.titre)}</span><span class="niv">bientôt</span></span>`).join("")}
+      ${pc ? `<a class="lien-coeur" href="#${pcId(m)}"${cur(pcId(m), actif)}><span>★ Par cœur de ce module</span><span class="niv">${nbPoints(pc)}</span></a>` : ""}</div>`;
+  }).join("");
+}
+
+// Mode révision : les réponses sont cachées, un clic en dévoile une (préférence gardée sur l'appareil).
+let revision = false;
+try { revision = localStorage.getItem("classeur-revision") === "1"; } catch (e) {}
+
+function blocModule(m, seul) {
+  const figures = (m.figures || []).map(g => `<figure><div class="dessin zoomable" tabindex="0" data-txt="${esc(g.legende)}">${g.svg}</div><figcaption>${esc(g.legende)}</figcaption></figure>`).join("");
+  return `<section class="pc-module">
+      ${seul ? "" : `<h2 class="pc-titre"><a href="#${pcId(m.module)}">Module ${esc(m.module)}</a><span>${nbPoints(m)} points · mis à jour le ${m.maj}</span></h2>`}
+      ${figures}
+      <div class="pc-themes">${m.themes.map(t => {
+        const fiche = FICHES.find(f => f.id === t.fiche);
+        return `<article class="pc-theme"><h3>${esc(t.titre)}</h3>
+          <dl>${t.lignes.map(([k, v]) => `<div class="pc-ligne"><dt>${esc(k)}</dt><dd><button type="button" class="pc-rep" aria-label="Voir la réponse">${esc(v)}</button></dd></div>`).join("")}</dl>
+          ${fiche ? `<a class="pc-fiche" href="#${fiche.id}">Fiche : ${esc(fiche.titre)} →</a>` : ""}</article>`;
+      }).join("")}</div>
+      ${m.pieges && m.pieges.length ? `<section><h3>Tes pièges sur ce module</h3><ul class="pieges">${m.pieges.map(([t, d]) => `<li><b>${esc(t)}</b> ${esc(d)}</li>`).join("")}</ul></section>` : ""}
+    </section>`;
+}
+
+function pageParCoeur(id) {
+  const m = PAR_COEUR.find(x => pcId(x.module) === id);
+  const liste = m ? [m] : PAR_COEUR;
+  document.getElementById("fiche").innerHTML = `
+    <header class="entete">
+      <div class="meta"><span>À savoir par cœur</span><span>${m ? `Module <b>${esc(m.module)}</b>` : `<b>${PAR_COEUR.length}</b> module${PAR_COEUR.length > 1 ? "s" : ""}`}</span></div>
+      <h1>${m ? `Par cœur · ${esc(m.module.split(" · ")[1] || m.module)}` : "À savoir par cœur"}</h1>
+    </header>
+    <p class="regle"><span>Comment s'en servir</span>Ce qui ne se déduit pas : on l'apprend, puis on le répète. Active le mode révision, dis chaque réponse à voix haute, puis touche-la pour vérifier. Une ligne ratée = un essai dans le Mémo le jour même.</p>
+    <div class="pc-barre">
+      <button type="button" id="pc-mode" aria-pressed="${revision}">${revision ? "Mode révision : réponses cachées" : "Mode révision : désactivé"}</button>
+      <button type="button" id="pc-tout"${revision ? "" : " hidden"}>Tout dévoiler</button>
+    </div>
+    <div class="pc-liste${revision ? " cache" : ""}" id="pc-liste">${liste.map(x => blocModule(x, !!m)).join("")}</div>`;
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("#pc-mode, #pc-tout, .pc-rep");
+  if (!b) return;
+  const liste = document.getElementById("pc-liste");
+  if (b.id === "pc-mode") {
+    revision = !revision;
+    try { localStorage.setItem("classeur-revision", revision ? "1" : "0"); } catch (err) {}
+    b.setAttribute("aria-pressed", revision);
+    b.textContent = revision ? "Mode révision : réponses cachées" : "Mode révision : désactivé";
+    document.getElementById("pc-tout").hidden = !revision;
+    liste.classList.toggle("cache", revision);
+    liste.querySelectorAll(".vu").forEach(x => x.classList.remove("vu"));
+  } else if (b.id === "pc-tout") {
+    liste.querySelectorAll(".pc-rep").forEach(x => x.classList.add("vu"));
+  } else {
+    b.classList.toggle("vu");
+  }
+});
+
+function afficher() {
+  const id = location.hash.slice(1);
+  if (id === "par-coeur" || id.startsWith("par-coeur-")) { sommaire(id); pageParCoeur(id); return; }
+  const f = FICHES.find(x => x.id === id) || FICHES[FICHES.length - 1];
+  sommaire(f.id);
+  const niveaux = { M: "Maîtriser", C: "Comprendre", IA: "Déléguer à l'IA" };
+  document.getElementById("fiche").innerHTML = `
+    <header class="entete">
+      <div class="meta"><span>Module ${esc(f.module)}</span><span>Niveau <b>${niveaux[f.niveau]}</b></span><span>Fiche du ${f.date}</span></div>
+      <h1>${esc(f.titre)}</h1>
+    </header>
+    <p class="regle"><span>La règle</span>${esc(f.regle)}</p>
+    <div class="deux">
+      <section><h3><span class="num">01</span>Le problème</h3><p>${esc(f.probleme)}</p></section>
+      <section><h3><span class="num">02</span>L'analogie</h3><p>${esc(f.analogie)}</p></section>
+    </div>
+    <section><h3><span class="num">03</span>Le schéma</h3>
+      ${(f.figures || []).map(g => `<figure>${g.photos ? `<div class="photos${g.bd ? " bd" : ""}">${g.photos.map(p => `<div class="photo"><img class="zoomable" tabindex="0" src="${p.img}" alt="${esc(p.alt)}" data-txt="${esc(p.titre + (p.texte ? " · " + p.texte : ""))}" loading="lazy"><b>${esc(p.titre)}</b>${p.texte ? `<span style="font-size:.88rem">${esc(p.texte)}</span>` : ""}<small>${esc(p.credit)}</small></div>`).join("")}</div>` : g.img ? `<img class="illus zoomable" tabindex="0" src="${g.img}" alt="${esc(g.alt)}" data-txt="${esc(g.legende)}" loading="lazy">` : `<div class="dessin zoomable" tabindex="0" data-txt="${esc(g.legende)}">${g.svg}</div>`}<figcaption>${esc(g.legende)}</figcaption></figure>`).join("")}
+      <pre>${f.schema}</pre></section>
+    <section><h3><span class="num">04</span>Testé dans mon terminal</h3><pre>${f.exemple}</pre><p>${f.exempleNote}</p></section>
+    <section><h3><span class="num">05</span>Les pièges</h3>
+      <ul class="pieges">${f.pieges.map(([t, d]) => `<li><b>${esc(t)}</b> ${esc(d)}</li>`).join("")}</ul>
+    </section>
+    ${f.enplus ? `<aside class="enplus"><h4>Pour aller plus loin (vu en séance)</h4>${f.enplus}</aside>` : ""}
+    <section><h3><span class="num">06</span>Teste-toi</h3>
+      <p style="color:var(--doux)">Réponds à voix haute avant d'ouvrir la réponse.</p>
+      <div class="questions">${f.questions.map(([q, r], i) =>
+        `<details id="q-${f.id}-${i}"><summary>${esc(q)}</summary><div class="reponse">${esc(r)}</div></details>`).join("")}</div>
+    </section>
+    <p class="liens">${esc(f.liens)}${PAR_COEUR.some(x => x.module === f.module) ? ` <a href="#${pcId(f.module)}">★ À savoir par cœur pour ce module →</a>` : ""}</p>`;
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", afficher);
+
+// La loupe : un clic (ou Entrée) sur une image ou un schéma l'ouvre en grand ; un clic n'importe où, ou Échap, la ferme.
+const loupe = document.createElement("dialog");
+loupe.className = "loupe";
+loupe.setAttribute("aria-label", "Image agrandie");
+document.body.appendChild(loupe);
+function ouvrirLoupe(el) {
+  const contenu = el.tagName === "IMG" ? `<img src="${el.getAttribute("src")}" alt="${esc(el.alt)}">` : `<div class="dessin">${el.innerHTML}</div>`;
+  loupe.innerHTML = `<button class="loupe-fermer" aria-label="Fermer">×</button><div class="loupe-in"><div class="loupe-img">${contenu}</div>${el.dataset.txt ? `<p class="loupe-txt">${esc(el.dataset.txt)}</p>` : ""}</div>`;
+  loupe.showModal();
+}
+document.addEventListener("click", e => {
+  if (loupe.open) { loupe.close(); return; }
+  const z = e.target.closest(".zoomable"); if (z) ouvrirLoupe(z);
+});
+document.addEventListener("keydown", e => {
+  const z = e.target.closest && e.target.closest(".zoomable");
+  if (z && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); ouvrirLoupe(z); }
+});
+afficher();
+</script>
+
+</body>
+</html>
