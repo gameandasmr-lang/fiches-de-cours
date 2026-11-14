@@ -71,6 +71,7 @@ body {
 .module a:hover { background: var(--accent-fond); }
 .module a[aria-current="page"] { background: var(--accent); color: var(--feuille); font-weight: 600; }
 .module span.avenir { color: var(--doux); font-style: italic; }
+.module h3.partie { font-size: .74rem; font-weight: 600; color: var(--encre); margin: 10px 0 2px; padding-left: 10px; border-left: 2px solid var(--accent); }
 .niv { font: 600 .7rem var(--mono); padding: 1px 6px; border-radius: 4px; border: 1px solid currentColor; opacity: .8; }
 
 /* Fiche */
@@ -196,7 +197,7 @@ dialog.loupe::backdrop { background: rgba(10, 12, 20, .88); }
 // Une fiche = un objet. Pour ajouter une leçon : ajouter un objet ici et republier.
 const FICHES = [
   {
-    id: "dns", module: "1 · Réseau", niveau: "M", titre: "Le DNS : du nom à l'adresse",
+    id: "dns", module: "1 · Réseau", chapitre: "1.8", partie: "A", niveau: "M", titre: "Le DNS : du nom à l'adresse",
     date: "07/11/2026",
     regle: "Le DNS traduit un nom de domaine en adresse IP. Une question (« quelle est l'adresse de picard.fr ? »), une réponse : l'IP de la cible. Il ne s'occupe pas des ports.",
     figures: [{
@@ -270,7 +271,7 @@ Address:  51.91.60.233           <span class="n">← LA RÉPONSE : l'IP de picar
     liens: "TryHackMe · Pre Security, module 6 « How The Web Works » → salle DNS in Detail. Fiche liée : L'adresse IP."
   },
   {
-    id: "ip", module: "1 · Réseau", niveau: "M", titre: "L'adresse IP",
+    id: "ip", module: "1 · Réseau", chapitre: "1.2", partie: "A", niveau: "M", titre: "L'adresse IP et le masque",
     date: "07/11/2026",
     regle: "Une adresse IP identifie un appareil sur un réseau. En IPv4 : 4 nombres de 0 à 255. Elle a deux parties, le réseau (la rue) et la machine (le numéro), et c'est le masque qui dit où passe la coupure.",
     figures: [{
@@ -361,7 +362,7 @@ Passerelle par défaut. . . .: fe80::2266:…%13  <span class="n">← ma box, en
     liens: "TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiche liée : Le DNS."
   },
   {
-    id: "http", module: "1 · Réseau", niveau: "M", titre: "Client-serveur, HTTP et HTML",
+    id: "http", module: "1 · Réseau", chapitre: "1.9", partie: "A", niveau: "M", titre: "Client-serveur, HTTP et HTML",
     date: "08/11/2026",
     regle: "HTTP, ce sont les règles de la communication pour les échanges sur le web : comment le client demande (GET /page) et comment le serveur répond (200 OK + le contenu). Le HTML est le document renvoyé : il décrit la page, le navigateur l'affiche. Ce qui s'exécute, c'est le JavaScript.",
     figures: [{
@@ -494,7 +495,7 @@ cf-cache-status: HIT                  <span class="n">← servi depuis le cache<
     liens: "TryHackMe · Pre Security, module 2 « Computer Fundamentals » → Client-Server Basics ; module 6 « How The Web Works » (à venir). Fiches liées : Le DNS, L'adresse IP."
   },
   {
-    id: "box", module: "1 · Réseau", niveau: "M", titre: "La box, le switch, le routeur",
+    id: "box", module: "1 · Réseau", chapitre: "1.1", partie: "A", niveau: "M", titre: "Le matériel : box, switch, routeur",
     date: "09/11/2026",
     regle: "Le PC applique son masque à sa propre adresse et à l'adresse de destination, puis compare les deux parties réseau. Identiques : il envoie directement, et le switch remet le message. Différentes : il envoie à sa passerelle (le routeur), qui fait passer le message dans l'autre réseau.",
     figures: [{
@@ -593,7 +594,7 @@ PC0 → ping 192.168.2.30                Request timed out (0 sur 4) <span class
     liens: "Packet Tracer · missions A (faite le 09/11) et B (faite le 10/11, voir la fiche suivante). TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiches liées : L'adresse IP, Le DNS, Le routeur et la passerelle."
   },
   {
-    id: "routeur", module: "1 · Réseau", niveau: "M", titre: "Le routeur et la passerelle par défaut",
+    id: "routeur", module: "1 · Réseau", chapitre: "1.3", partie: "A", niveau: "M", titre: "Le routeur et la passerelle par défaut",
     date: "10/11/2026",
     regle: "La passerelle par défaut, c'est l'adresse du routeur dans mon réseau : ma porte de sortie. Elle a la même partie réseau que le PC, et c'est une adresse privée. Quand la destination n'est pas dans son réseau, le PC confie le paquet à sa passerelle. Chaque machine en a besoin pour ENVOYER hors de son réseau : un ping est un aller et un retour, il faut donc une passerelle des deux côtés.",
     figures: [{
@@ -732,7 +733,7 @@ Passerelle partout :   PC0 → PC3   Reply TTL=127 (3/4)  <span class="n">← 1e
     liens: "Packet Tracer · mission B (mission-B.pkt, faite le 10/11). TryHackMe · Pre Security, module 5 « Network Fundamentals » → What is Networking?, Intro to LAN. Fiches liées : La box, le switch, le routeur ; L'adresse IP."
   },
   {
-    id: "depanner", module: "1 · Réseau", niveau: "M", titre: "Dépanner en 4 étages (ipconfig, ping, nslookup, curl)",
+    id: "depanner", module: "1 · Réseau", chapitre: "1.10", partie: "A", niveau: "M", titre: "Dépanner en 4 étages (ipconfig, ping, nslookup, curl)",
     date: "13/11/2026, complétée le 14/11",
     regle: "Chaque étage a besoin de celui d'en dessous : le DNS a besoin du réseau, le site a besoin du DNS. On part donc du bas : ma machine (ipconfig) → le réseau, avec une IP (ping) → les noms (nslookup) → le service (curl, le navigateur). Le premier étage qui échoue, c'est la panne : les échecs au-dessus ne sont que des ricochets.",
     figures: [{
@@ -982,10 +983,30 @@ const PAR_COEUR = [
 ];
 const pcId = m => "par-coeur-" + m.split(" ")[0];   // "1 · Réseau" → par-coeur-1
 
-// Leçons prévues, affichées grisées dans le sommaire
+// Leçons prévues, affichées grisées dans le sommaire (plan du module validé par Arnaud le 15/11/2026)
 const A_VENIR = [
-  { module: "1 · Réseau", titre: "Ports, TCP et UDP", niveau: "M" }
+  { module: "1 · Réseau", chapitre: "1.4", partie: "A", titre: "DHCP et ARP", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.5", partie: "A", titre: "Les sous-réseaux à la main", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.6", partie: "A", titre: "Les modèles OSI et TCP/IP", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.7", partie: "A", titre: "Ports, TCP et UDP", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.11", partie: "B", titre: "VLAN et routage entre VLAN", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.12", partie: "B", titre: "Plan d'adressage et routage statique", niveau: "M" },
+  { module: "1 · Réseau", chapitre: "1.13", partie: "B", titre: "ACL et pare-feu (pfSense)", niveau: "C" },
+  { module: "1 · Réseau", chapitre: "1.14", partie: "B", titre: "VPN et Wi-Fi d'entreprise", niveau: "C" },
+  { module: "1 · Réseau", chapitre: "1.15", partie: "B", titre: "Redondance : OSPF, STP, HSRP", niveau: "C" }
 ];
+
+// Sous-parties d'un module : une lettre → un intitulé (clé "numéro du module" + lettre)
+const PARTIES = {
+  "1A": "A. Les fondations",
+  "1B": "B. Le réseau d'entreprise"
+};
+// Tri par numéro de chapitre : 1.2 avant 1.10 (comparaison nombre par nombre, pas en texte)
+const ordreChapitre = (a, b) => {
+  const x = (a.chapitre || "99").split(".").map(Number), y = (b.chapitre || "99").split(".").map(Number);
+  return x[0] - y[0] || (x[1] || 0) - (y[1] || 0);
+};
+const titreNum = f => (f.chapitre ? f.chapitre + " · " : "") + f.titre;
 
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -1002,9 +1023,15 @@ function sommaire(actif) {
     ${PAR_COEUR.map(m => `<a href="#${pcId(m.module)}"${cur(pcId(m.module), actif)}><span>Module ${esc(m.module)}</span><span class="niv">${nbPoints(m)}</span></a>`).join("")}</div>`;
   document.getElementById("intercalaires").innerHTML = parCoeur + Object.entries(modules).map(([m, liste]) => {
     const pc = PAR_COEUR.find(x => x.module === m);
-    return `<div class="module"><h2>Module ${esc(m)}</h2>${liste.map(f => f.pret
-      ? `<a href="#${f.id}"${cur(f.id, actif)}><span>${esc(f.titre)}</span><span class="niv">${f.niveau}</span></a>`
-      : `<span class="avenir"><span>${esc(f.titre)}</span><span class="niv">bientôt</span></span>`).join("")}
+    let partie = null;
+    return `<div class="module"><h2>Module ${esc(m)}</h2>${liste.sort(ordreChapitre).map(f => {
+      const cle = m.split(" ")[0] + (f.partie || "");
+      const sousTitre = f.partie && cle !== partie && PARTIES[cle] ? `<h3 class="partie">${esc(PARTIES[cle])}</h3>` : "";
+      partie = cle;
+      return sousTitre + (f.pret
+      ? `<a href="#${f.id}"${cur(f.id, actif)}><span>${esc(titreNum(f))}</span><span class="niv">${f.niveau}</span></a>`
+      : `<span class="avenir"><span>${esc(titreNum(f))}</span><span class="niv">bientôt</span></span>`);
+    }).join("")}
       ${pc ? `<a class="lien-coeur" href="#${pcId(m)}"${cur(pcId(m), actif)}><span>★ Par cœur de ce module</span><span class="niv">${nbPoints(pc)}</span></a>` : ""}</div>`;
   }).join("");
 }
@@ -1022,7 +1049,7 @@ function blocModule(m, seul) {
         const fiche = FICHES.find(f => f.id === t.fiche);
         return `<article class="pc-theme"><h3>${esc(t.titre)}</h3>
           <dl>${t.lignes.map(([k, v]) => `<div class="pc-ligne"><dt>${esc(k)}</dt><dd><button type="button" class="pc-rep" aria-label="Voir la réponse">${esc(v)}</button></dd></div>`).join("")}</dl>
-          ${fiche ? `<a class="pc-fiche" href="#${fiche.id}">Fiche : ${esc(fiche.titre)} →</a>` : ""}</article>`;
+          ${fiche ? `<a class="pc-fiche" href="#${fiche.id}">Fiche ${esc(titreNum(fiche))} →</a>` : ""}</article>`;
       }).join("")}</div>
       ${m.pieges && m.pieges.length ? `<section><h3>Tes pièges sur ce module</h3><ul class="pieges">${m.pieges.map(([t, d]) => `<li><b>${esc(t)}</b> ${esc(d)}</li>`).join("")}</ul></section>` : ""}
     </section>`;
@@ -1072,7 +1099,7 @@ function afficher() {
   const niveaux = { M: "Maîtriser", C: "Comprendre", IA: "Déléguer à l'IA" };
   document.getElementById("fiche").innerHTML = `
     <header class="entete">
-      <div class="meta"><span>Module ${esc(f.module)}</span><span>Niveau <b>${niveaux[f.niveau]}</b></span><span>Fiche du ${f.date}</span></div>
+      <div class="meta"><span>Module ${esc(f.module)}</span>${f.chapitre ? `<span>Chapitre <b>${f.chapitre}</b></span>` : ""}<span>Niveau <b>${niveaux[f.niveau]}</b></span><span>Fiche du ${f.date}</span></div>
       <h1>${esc(f.titre)}</h1>
     </header>
     <p class="regle"><span>La règle</span>${esc(f.regle)}</p>
