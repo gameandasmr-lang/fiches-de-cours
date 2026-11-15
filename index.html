@@ -124,6 +124,9 @@ pre .p { color: #8ea6ff; }
 .pieges { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
 .pieges li { background: var(--piege-fond); border-left: 4px solid var(--piege); padding: 10px 14px; border-radius: 0 6px 6px 0; }
 .pieges li b { color: var(--piege); }
+.pieges.essentiels li { background: var(--accent-fond, transparent); border-left-color: var(--accent); }
+.pieges.essentiels li b { color: var(--accent); }
+.jourj { display: grid; gap: 8px; padding-left: 22px; margin: 0; }
 
 .enplus { border: 1px dashed var(--trait); border-radius: 8px; padding: 14px 18px; display: grid; gap: 8px; background: var(--feuille); }
 .enplus h4 { margin: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--doux); }
@@ -1018,6 +1021,44 @@ const PAR_COEUR = [
 ];
 const pcId = m => "par-coeur-" + m.split(" ")[0];   // "1 · Réseau" → par-coeur-1
 
+// « Réviser un examen » (demande d'Arnaud, 15/11/2026) : un condensé de prof particulier avant chaque examen,
+// remis quelques jours avant. Jamais le sujet ni la liste complète des thèmes : l'essentiel, ses pièges, la méthode du jour J.
+const REVISIONS = [
+  {
+    id: "revision-E1", examen: "E1", titre: "La box, le switch, le routeur, la passerelle", quand: "mardi 17/11/2026 à 21 h 45", remise: "15/11/2026",
+    mot: "Tu n'as pas besoin de tout relire. Si tu sais raconter le voyage d'une demande, dire qui décide et qui livre, et dépanner étage par étage, tu as le socle. Ce qui fera la différence, c'est le mot exact : à l'examen, une réponse à moitié juste ne vaut pas la moitié des points.",
+    essentiels: [
+      ["Qui fait quoi", "Le PC décide : il compare, grâce à son masque, la partie réseau de son adresse et celle de la destination. Le switch livre, d'après la MAC, dans le même réseau. Le routeur relie des réseaux différents, avec une adresse dans chacun. Le modem convertit le signal pour la ligne. La box range tout ça dans un seul boîtier."],
+      ["La passerelle", "C'est l'adresse privée du routeur dans mon réseau : ma porte de sortie. Sans elle, une machine reçoit, mais ne peut pas répondre hors de son réseau. Un ping est un aller ET un retour."],
+      ["Le voyage d'une demande", "Le DNS d'abord, il donne seulement l'adresse. Puis : téléphone → borne Wi-Fi (ou switch) → routeur, qui fait le NAT → modem → fournisseur d'accès et Internet → serveur, et le retour à l'envers. L'IP de destination désigne le destinataire final ; la MAC de destination, la prochaine étape sur le réseau local."],
+      ["Le NAT", "À l'aller, le routeur remplace l'adresse SOURCE privée par l'adresse publique de la box et note la connexion dans sa table, avec un port. Au retour, il lit le port et remet l'adresse privée en DESTINATION. Ses deux adresses à lui ne bougent jamais."],
+      ["Dépanner", "Voyants et câbles, ipconfig /all, ping de la passerelle puis de 8.8.8.8, nslookup, curl -I. Une commande = un étage ; le premier étage qui échoue, c'est la panne. Le PC témoin dit si la panne est commune ou propre au poste. On répare la cause, on ne la contourne pas, et on prouve la réparation."]
+    ],
+    pieges: [
+      ["« Le switch décide, compare les IP, distribue. »", "Il transmet, d'après la MAC. C'est le PC qui décide."],
+      ["Pinguer un nom pour diagnostiquer.", "On pingue une IP. Le nom fait intervenir le DNS en plus : un échec ne dit plus quel étage est en panne."],
+      ["« Le NAT transforme l'adresse de la passerelle », « il retrouve l'appareil par sa MAC ».", "Il remplace l'adresse source du téléphone ; au retour, c'est le port de la table NAT qui retrouve l'appareil."],
+      ["« Le modem traduit la requête. »", "Il convertit le signal ; c'est le routeur qui lit et réécrit les adresses."],
+      ["Une bonne réponse sans la bonne raison.", "Le correcteur note la justification. Termine chaque réponse par « parce que… »."]
+    ],
+    jourJ: [
+      "Lis toute la consigne d'une question avant d'écrire, et souligne ce qu'on te demande vraiment (un nom, une raison, un ordre ?).",
+      "Dans Packet Tracer : écris ton plan d'adressage avant de câbler (PC, prises du routeur, passerelles), puis prouve que ça marche par un ping dans les deux sens.",
+      "Pour « explique à un collègue » : trois phrases courtes, sans jargon inutile, mais avec le mot exact.",
+      "Pour une panne : écris d'abord ton plan d'étages, arrête-toi au premier qui échoue, et dis ce qu'il prouve ET ce qu'il ne prouve pas.",
+      "Tu bloques ? Passe à la suite et reviens-y. Garde cinq minutes à la fin pour relire chaque réponse en cherchant le mot flou."
+    ],
+    autotest: [
+      ["En une phrase : qui décide qu'un paquet doit sortir du réseau, et grâce à quoi ?", "Le PC, en comparant les parties réseau des deux adresses grâce à son masque ; s'il sort, il le confie à sa passerelle."],
+      ["Le PC voisin a Internet, pas celui de ton collègue. Que peux-tu dire, et que ne peux-tu pas dire ?", "Tout ce qui est partagé marche (switch, box, Internet). La panne est sur son poste : PC, câble ou port. Le témoin ne dit pas lequel : on reprend les étages par le bas."],
+      ["Raconte le NAT en trois verbes.", "Remplacer (la source, à l'aller), noter (la connexion et son port dans la table), rendre (au retour, la destination redevient l'adresse privée)."],
+      ["Pourquoi le serveur de YouTube ne connaît-il jamais la MAC de ton téléphone ?", "Une MAC ne sert que sur le réseau local, d'une étape à la suivante ; YouTube répond à l'adresse IP publique de la box."]
+    ],
+    liens: ["box", "routeur", "ip", "depanner"]
+  }
+];
+const revId = r => r.id;
+
 // Leçons prévues, affichées grisées dans le sommaire (plan du module validé par Arnaud le 14/11/2026)
 const A_VENIR = [
   { module: "1 · Réseau", chapitre: "1.4", partie: "A", titre: "DHCP et ARP", niveau: "M" },
@@ -1065,7 +1106,9 @@ function sommaire(actif) {
     const ouvert = contientActif || (cle in dossiersOuverts ? dossiersOuverts[cle] : ouvertParDefaut);
     return `<details class="dossier ${classe}" data-cle="${cle}"${ouvert ? " open" : ""}><summary><span class="dossier-titre">${titre}</span><span class="compte">${compte}</span></summary><div class="dossier-contenu">${contenu}</div></details>`;
   };
-  document.getElementById("intercalaires").innerHTML = parCoeur + Object.entries(modules).map(([m, liste]) => {
+  const reviser = REVISIONS.length ? `<div class="module coeur"><h2>Réviser un examen</h2>
+    ${REVISIONS.map(r => `<a href="#${revId(r)}"${cur(revId(r), actif)}><span>${esc(r.examen)} · ${esc(r.quand.split(" à ")[0])}</span><span class="niv">★</span></a>`).join("")}</div>` : "";
+  document.getElementById("intercalaires").innerHTML = reviser + parCoeur + Object.entries(modules).map(([m, liste]) => {
     const pc = PAR_COEUR.find(x => x.module === m);
     const num = m.split(" ")[0];
     const groupes = [];
@@ -1154,9 +1197,32 @@ document.addEventListener("click", e => {
   }
 });
 
+function pageRevision(r) {
+  const fiches = r.liens.map(id => FICHES.find(f => f.id === id)).filter(Boolean);
+  document.getElementById("fiche").innerHTML = `
+    <header class="entete">
+      <div class="meta"><span>Réviser un examen</span><span>Examen <b>${esc(r.examen)}</b> · ${esc(r.quand)}</span><span>Remise le ${r.remise}</span></div>
+      <h1>${esc(r.examen)} · ${esc(r.titre)}</h1>
+    </header>
+    <p class="regle"><span>Le mot du prof</span>${esc(r.mot)}</p>
+    <section><h3><span class="num">01</span>Ce que je veux t'entendre dire sans hésiter</h3>
+      <ul class="pieges essentiels">${r.essentiels.map(([t, d]) => `<li><b>${esc(t)}.</b> ${esc(d)}</li>`).join("")}</ul></section>
+    <section><h3><span class="num">02</span>Tes pièges à toi</h3>
+      <ul class="pieges">${r.pieges.map(([t, d]) => `<li><b>${esc(t)}</b> ${esc(d)}</li>`).join("")}</ul></section>
+    <section><h3><span class="num">03</span>Le jour J</h3>
+      <ol class="jourj">${r.jourJ.map(t => `<li>${esc(t)}</li>`).join("")}</ol></section>
+    <section><h3><span class="num">04</span>Quatre questions pour vérifier</h3>
+      <p style="color:var(--doux)">À voix haute, avant d'ouvrir la réponse. Ce ne sont pas les questions de l'examen.</p>
+      <div class="questions">${r.autotest.map(([q, rep], i) => `<details id="q-${r.id}-${i}"><summary>${esc(q)}</summary><div class="reponse">${esc(rep)}</div></details>`).join("")}</div></section>
+    <p class="liens">Pour creuser un point : ${fiches.map(f => `<a href="#${f.id}">${esc(titreNum(f))}</a>`).join(" · ")} · <a href="#${pcId("1 · Réseau")}">★ À savoir par cœur</a></p>`;
+  window.scrollTo(0, 0);
+}
+
 function afficher() {
   const id = location.hash.slice(1);
   if (id === "par-coeur" || id.startsWith("par-coeur-")) { sommaire(id); pageParCoeur(id); return; }
+  const rev = REVISIONS.find(r => r.id === id);
+  if (rev) { sommaire(id); pageRevision(rev); return; }
   const f = FICHES.find(x => x.id === id) || FICHES[FICHES.length - 1];
   sommaire(f.id);
   const niveaux = { M: "Maîtriser", C: "Comprendre", IA: "Déléguer à l'IA" };
