@@ -74,7 +74,7 @@ body {
 .module a:hover { background: var(--accent-fond); }
 .module a[aria-current="page"] { background: var(--accent); color: var(--feuille); font-weight: 600; }
 .module span.avenir { color: var(--doux); font-style: italic; }
-/* Sommaire en dossiers repliables (demande d'Arnaud, 15/11/2026) */
+/* Sommaire en dossiers repliables (demande d'Arnaud, 14/11/2026) */
 details.dossier > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; user-select: none; }
 details.dossier > summary::-webkit-details-marker { display: none; }
 details.dossier > summary::before { content: ""; width: 7px; height: 7px; flex: none; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; opacity: .7; }
@@ -363,9 +363,14 @@ Passerelle par défaut. . . .: fe80::2266:…%13  <span class="n">← ma box, en
       ["« La passerelle, c'est ma box avec une adresse plus complexe. »", "Le format complexe (fe80::…), c'est l'IPv6 de la box. Son adresse IPv4 est juste en dessous : 192.168.1.254."],
       ["✏️ Tes pièges du 11/11 : « Une adresse qui commence au-dessus de 170 est privée. »", "Règle inventée, à oublier. Il y a trois plages exactes : 10.x.x.x, 172.16 à 172.31, 192.168.x.x. Dans l'essai, 10.4.2.1 a été dite publique (elle est privée) et 172.40.1.1 privée (elle est publique). Voir la fiche « À savoir par cœur »."],
       ["✏️ « Chaque machine a plusieurs adresses MAC, une par composant. »", "Une adresse MAC par carte réseau (Wi-Fi, Ethernet), pas par composant. L'IP dit dans quel réseau est la machine ; la MAC dit à quelle prise la livrer, dans ce réseau. Elle ne sort jamais du réseau local."],
-      ["Serveur et site, ce n'est pas pareil.", "Le serveur est la machine, le site est ce qu'elle sert. Un serveur peut héberger plusieurs sites, et un site peut être réparti sur plusieurs serveurs (un CDN comme Cloudflare)."]
+      ["Serveur et site, ce n'est pas pareil.", "Le serveur est la machine, le site est ce qu'elle sert. Un serveur peut héberger plusieurs sites, et un site peut être réparti sur plusieurs serveurs (un CDN comme Cloudflare)."],
+      ["✏️ 15/11 (trois fois) · « Le NAT transforme l'adresse privée de la passerelle en adresse publique. »", "Le routeur ne change jamais ses propres adresses : il en a deux, fixes, une de chaque côté. Il remplace l'adresse SOURCE de l'enveloppe, celle du téléphone, par l'adresse publique de la box."],
+      ["✏️ 15/11 · « Le routeur note la MAC du téléphone » et « au retour, il compare les MAC ».", "Il note la connexion dans sa table NAT avec un numéro de PORT, et c'est ce port qui retrouve le bon appareil au retour. La réponse vient d'Internet : elle ne porte aucune MAC de chez toi."],
+      ["✏️ 15/11 · « La MAC du routeur, c'est pour que YouTube sache à qui répondre. »", "YouTube ne voit jamais aucune MAC de chez toi : il répond à l'IP publique de la box. IP de destination = le destinataire final ; MAC de destination = la prochaine étape sur le réseau local (le routeur, trouvé par ARP). La MAC change à chaque routeur, pas l'IP."],
+      ["✏️ 15/11 · « Le modem traduit la requête » et « le protocole NAT ».", "Le modem ne touche pas à la demande : il convertit le signal pour la fibre ou la ligne. C'est le routeur qui réécrit les adresses. Et le NAT n'est pas un protocole (une règle de conversation entre deux machines, comme HTTP) : c'est une traduction d'adresses faite par le routeur."],
+      ["✏️ 15/11 · « On ne peut pas pinguer une adresse privée à travers un routeur. »", "Si : dans l'entreprise, les routeurs font passer les adresses privées sans problème, pourvu que chaque machine ait sa passerelle. Privée = pas joignable DEPUIS INTERNET (les routeurs d'Internet ne les transportent pas), pas « impossible à joindre »."]
     ],
-    enplus: "<p><b>Le NAT, c'est l'accueil d'un hôtel.</b> Les chambres ont des numéros internes (les IP privées) ; l'hôtel a une seule adresse postale (l'IP publique). L'accueil (la box) met l'adresse de l'hôtel comme expéditeur sur chaque lettre et note dans un registre (la table NAT) quelle chambre a écrit à qui, grâce à un numéro de port. Quand la réponse arrive, il la remonte à la bonne chambre. Vérifié en séance : <code>curl.exe ifconfig.me</code> affiche l'adresse publique de la box, pas celle du PC. La box a deux faces : 192.168.1.254 dedans, l'IP publique dehors. Bonus sécurité : une connexion venue de dehors que personne n'a demandée n'est pas dans le registre, donc la box la jette.</p><p><b>Pourquoi un serveur a aussi un nom ?</b> Un nom de domaine n'est qu'une étiquette posée sur une adresse IP, et n'importe quelle machine peut en avoir une. Les sites en sont l'usage le plus connu, mais les administrateurs nomment aussi leurs machines pour s'y retrouver : <code>eole2.iptwins.com</code>, c'est « la machine Eole n° 2 d'IP Twins ». Comme chez Picard, où le magasin a une enseigne pour les clients, mais où la chambre froide a aussi son étiquette pour les techniciens.</p>",
+    enplus: "<p><b>Le NAT, c'est l'accueil d'un hôtel.</b> Les chambres ont des numéros internes (les IP privées) ; l'hôtel a une seule adresse postale (l'IP publique). L'accueil (la box) met l'adresse de l'hôtel comme expéditeur sur chaque lettre et note dans un registre (la table NAT) quelle chambre a écrit à qui, grâce à un numéro de port. Quand la réponse arrive, il la remonte à la bonne chambre. Vérifié en séance : <code>curl.exe ifconfig.me</code> affiche l'adresse publique de la box, pas celle du PC. La box a deux faces : 192.168.1.254 dedans, l'IP publique dehors. Bonus sécurité : une connexion venue de dehors que personne n'a demandée n'est pas dans le registre, donc la box la jette.</p><p><b>✏️ Le NAT dans les deux sens (15/11), sur un exemple.</b></p><pre>                  SOURCE                        DESTINATION\nAller, avant      192.168.120.120 (téléphone)   142.250.x.x (YouTube)\nAller, après      88.12.34.56 (box, publique)   142.250.x.x          ← inchangée\nRetour, arrivée   142.250.x.x                   88.12.34.56 port 50000\nRetour, après     142.250.x.x                   192.168.120.120 port 51000\n\nTable NAT :  192.168.120.120 port 51000  ↔  88.12.34.56 port 50000</pre><p>À l'aller, le routeur remplace la <b>source</b> ; au retour, la <b>destination</b>. Entre les deux, sa table NAT, où chaque connexion a son propre port côté Internet : c'est le port qui retrouve le bon appareil. Les deux adresses du routeur (192.168.120.1 dedans, 88.12.34.56 dehors) ne changent jamais.</p><p><b>Pourquoi un serveur a aussi un nom ?</b> Un nom de domaine n'est qu'une étiquette posée sur une adresse IP, et n'importe quelle machine peut en avoir une. Les sites en sont l'usage le plus connu, mais les administrateurs nomment aussi leurs machines pour s'y retrouver : <code>eole2.iptwins.com</code>, c'est « la machine Eole n° 2 d'IP Twins ». Comme chez Picard, où le magasin a une enseigne pour les clients, mais où la chambre froide a aussi son étiquette pour les techniciens.</p>",
     questions: [
       ["Ton PC (192.168.1.94, masque 255.255.255.0) veut joindre 192.168.1.254, puis 51.91.60.233. Lequel en direct, lequel par la passerelle ?",
        "192.168.1.254 en direct, car c'est la même rue (192.168.1). 51.91.60.233 par la passerelle, car c'est une autre rue."],
@@ -749,7 +754,7 @@ Passerelle partout :   PC0 → PC3   Reply TTL=127 (3/4)  <span class="n">← 1e
   },
   {
     id: "depanner", module: "1 · Réseau", chapitre: "1.10", partie: "A", niveau: "M", titre: "Dépanner en 4 étages (ipconfig, ping, nslookup, curl)",
-    date: "13/11/2026, complétée le 14/11",
+    date: "13/11/2026, complétée les 14 et 15/11",
     regle: "Chaque étage a besoin de celui d'en dessous : le DNS a besoin du réseau, le site a besoin du DNS. On part donc du bas : ma machine (ipconfig) → le réseau, avec une IP (ping) → les noms (nslookup) → le service (curl, le navigateur). Le premier étage qui échoue, c'est la panne : les échecs au-dessus ne sont que des ricochets.",
     figures: [{
       legende: "La check-list, dans l'ordre. Pour chaque étage : la commande, à qui elle parle, et le message qu'on lit quand ça casse. On monte d'un étage seulement si celui du dessous marche.",
@@ -866,9 +871,13 @@ curl -I https://www.picard.fr HTTP/1.1 200 OK · Server: cloudflare <span class=
       ["✏️ 14/11 · Vouloir réparer la passerelle du serveur.", "La panne venait de la machine de ma collègue : l'adresse du DNS était mauvaise. Passerelle = par quelle porte je sors ; DNS Servers = à qui je demande les noms. Deux cases, deux rôles."],
       ["✏️ 14/11 · nslookup picard.fr 8.8.8.8 marche, donc c'est réglé.", "Ça marchait parce que je contournais le problème : il fallait le corriger dans la configuration de la machine. Contourner ≠ réparer."],
       ["✏️ 14/11 · « ping 8.8.8.8 échoue, donc c'est le DNS » (deux fois).", "La panne est à l'étage du réseau : on vise une IP, aucun nom à traduire. Je ne teste pas nslookup ensuite. Pour couper l'étage en deux : la passerelle d'abord (échoue → chez moi), puis 8.8.8.8 (échoue seul → au-delà de la box). Le DNS a besoin de la route ; la route n'a pas besoin du DNS."],
-      ["✏️ 14/11 · La chaîne du DNS sans la racine, et « l'hébergeur ».", "Le résolveur du FAI demande d'abord à la racine, qui fait autorité pour diriger vers le .fr. Le mot exact : le serveur qui fait autorité (pas l'hébergeur). Dans la BD : la gardienne = la box, le coursier = le résolveur du FAI, les guichets = les serveurs qui font autorité."]
+      ["✏️ 14/11 · La chaîne du DNS sans la racine, et « l'hébergeur ».", "Le résolveur du FAI demande d'abord à la racine, qui fait autorité pour diriger vers le .fr. Le mot exact : le serveur qui fait autorité (pas l'hébergeur). Dans la BD : la gardienne = la box, le coursier = le résolveur du FAI, les guichets = les serveurs qui font autorité."],
+      ["✏️ 15/11 · « Une mauvaise adresse IP rend le voyant rouge » et « le switch vérifie le réseau ».", "Le voyant parle de l'étage physique : câble, prise, port désactivé. Une mauvaise IP laisse le voyant vert, car le switch ne lit jamais les adresses IP : il livre selon la MAC. Mission 3 : voyant rouge = le port Fa0/1 du switch, désactivé."],
+      ["✏️ 15/11 · ping du nom avant l'IP, encore (trois fois le matin, dans la liste des étages).", "Règle n° 1, tenue à froid le soir même : pour diagnostiquer, on pingue une IP (la passerelle, puis 8.8.8.8) ; le nom vient avec nslookup, à l'étage d'après."],
+      ["✏️ 15/11 · « Le PC témoin prouve que la panne vient de la configuration du PC. »", "Le témoin prouve que tout ce qui est partagé marche (switch, box, Internet). La panne est sur le poste du collègue : son PC, son câble OU son port du switch. Il ne dit pas lequel : on reprend les étages par le bas. Mission 3 : c'était le port, pas la configuration."],
+      ["✏️ 15/11 · Étage 3 : « ping du nom » ; étage 4 : « curl -i ».", "Étage 3 = nslookup : lui seul affiche quel résolveur répond. Étage 4 = curl -I (I majuscule : seulement le statut et les en-têtes ; -i minuscule ajoute toute la page)."]
     ],
-    enplus: "<p><b>Capsule d'histoire : pourquoi ces noms ?</b> <b>ping</b> vient du sonar (Mike Muuss, décembre 1983) ; le sens « Packet InterNet Groper » a été inventé après coup. <b>nslookup</b> = <i>name server lookup</i>, « consulter un serveur de noms », né dans les années 1980 avec BIND, le serveur DNS de l'université de Berkeley ; le DNS lui-même date de 1983 (Paul Mockapetris) et a remplacé HOSTS.TXT, un fichier unique qui listait à la main tous les noms d'Internet. <b>ipconfig</b> = <i>IP configuration</i> (sous Linux : ifconfig, puis ip). <b>curl</b> = <i>Client URL</i> : Daniel Stenberg, un développeur suédois, voulait qu'un programme aille chercher tout seul des taux de change sur le Web ; première version sous ce nom en 1998, aujourd'hui présent dans des milliards d'appareils.</p><p><b>Le DNS n'est pas une machine, c'est un système.</b> Le résolveur (ta box, puis celui de ton fournisseur, ou 8.8.8.8 chez Google) cherche pour toi et retient les réponses un moment ; les serveurs qui font autorité (la racine, le .fr, puis celui de picard.fr) possèdent chacun leur page de l'annuaire, et rien d'autre.</p>",
+    enplus: "<p><b>Capsule d'histoire : pourquoi ces noms ?</b> <b>ping</b> vient du sonar (Mike Muuss, décembre 1983) ; le sens « Packet InterNet Groper » a été inventé après coup. <b>nslookup</b> = <i>name server lookup</i>, « consulter un serveur de noms », né dans les années 1980 avec BIND, le serveur DNS de l'université de Berkeley ; le DNS lui-même date de 1983 (Paul Mockapetris) et a remplacé HOSTS.TXT, un fichier unique qui listait à la main tous les noms d'Internet. <b>ipconfig</b> = <i>IP configuration</i> (sous Linux : ifconfig, puis ip). <b>curl</b> = <i>Client URL</i> : Daniel Stenberg, un développeur suédois, voulait qu'un programme aille chercher tout seul des taux de change sur le Web ; première version sous ce nom en 1998, aujourd'hui présent dans des milliards d'appareils.</p><p><b>Le DNS n'est pas une machine, c'est un système.</b> Le résolveur (ta box, puis celui de ton fournisseur, ou 8.8.8.8 chez Google) cherche pour toi et retient les réponses un moment ; les serveurs qui font autorité (la racine, le .fr, puis celui de picard.fr) possèdent chacun leur page de l'annuaire, et rien d'autre.</p><p><b>✏️ Sous l'étage 1 : l'étage physique (15/11).</b> Avant même ipconfig, on regarde les voyants et les câbles. Voyant éteint ou rouge (orange dans Packet Tracer) = rien ne passe : câble débranché ou abîmé, mauvaise prise, port du switch désactivé. Une mauvaise adresse IP, elle, laisse le voyant vert.</p><p><b>✏️ Le PC témoin.</b> Un poste du même réseau, branché au même switch, qui marche. Il prouve que tout ce qu'il partage avec le PC en panne fonctionne (le switch, la box, Internet, le DNS de la box) : inutile d'appeler l'opérateur. La panne est donc propre au poste en panne, PC, câble ou port compris. Il ne dit pas lequel : on cherche la différence, étage par étage, depuis le bas.</p><p><b>✏️ Prouver une réparation.</b> Après la réparation, on remonte tous les étages jusqu'au geste de l'utilisateur : ping de la passerelle, ping 8.8.8.8, nslookup, puis le site par son NOM, dans le navigateur. Une panne peut en cacher une autre : mission 3 du 15/11, le port réparé, il restait une case DNS fausse. Et on répare la cause, on ne la contourne pas.</p>",
     questions: [
       ["Pourquoi tester un ping vers une IP avant nslookup ?",
        "Parce que le DNS a besoin du réseau. Si le réseau est cassé, nslookup échoue aussi, et on accuserait le DNS à tort. Le ping vers une IP teste le réseau seul, sans les noms."],
@@ -881,16 +890,20 @@ curl -I https://www.picard.fr HTTP/1.1 200 OK · Server: cloudflare <span class=
       ["Mise en situation (mission 2 du 14/11) : la passerelle répond, ping 8.8.8.8 échoue, pour tous les PC du bureau. Quel étage ? Que fais-tu ?",
        "L'étage du réseau, au-delà de la box : elle n'a plus Internet. Le DNS n'y est pour rien. Je regarde ses voyants, je la redémarre, puis j'appelle le FAI ; je ne touche à aucun PC."],
       ["Diagnostiquer ou prouver : quand ping picard.fr est-il un bon test ?",
-       "Pour prouver une réparation : s'il réussit, la config, la route et le DNS marchent. Pour diagnostiquer, un étage à la fois (ping d'une IP)."]
+       "Pour prouver une réparation : s'il réussit, la config, la route et le DNS marchent. Pour diagnostiquer, un étage à la fois (ping d'une IP)."],
+      ["Mise en situation (mission 3 du 15/11) : le PC voisin, sur le même switch, a Internet ; celui de ton collègue non, et son voyant est rouge. Que conclus-tu, et où cherches-tu ?",
+       "Tout ce qui est partagé marche : la panne est sur son poste. Voyant rouge = étage physique : son câble, sa prise, ou son port du switch (ici désactivé). On ne touche pas à sa configuration IP avant d'avoir réglé l'étage du bas."],
+      ["Piège : une mauvaise adresse IP sur le PC peut-elle rendre le voyant rouge ?",
+       "Non. Le voyant dit seulement si le lien physique passe. Le switch ne lit pas les adresses IP : avec une mauvaise IP, le voyant reste vert et c'est le ping qui échoue."]
     ],
-    liens: "TryHackMe · Pre Security, module 3 « Operating Systems Basics » → Windows CLI Basics (faite le 13/11). Packet Tracer : packet-tracer/2026-11-14_mission-plus-internet.pkt et 2026-11-14_mission-2-plus-internet.pkt (14/11). Fiches liées : Le DNS ; Client-serveur, HTTP et HTML ; Le routeur et la passerelle par défaut."
+    liens: "TryHackMe · Pre Security, module 3 « Operating Systems Basics » → Windows CLI Basics (faite le 13/11). Packet Tracer : packet-tracer/2026-11-14_mission-plus-internet.pkt et 2026-11-14_mission-2-plus-internet.pkt (14/11), 2026-11-15_mission-3-plus-internet.pkt (15/11 : port désactivé). Fiches liées : Le DNS ; Client-serveur, HTTP et HTML ; Le routeur et la passerelle par défaut."
   }
 ];
 // « À savoir par cœur » (demande d'Arnaud, 12/11/2026) : un intercalaire à part, avec un sous-dossier par module.
 // Pour ajouter un module : un objet ici (module = le même libellé que dans FICHES). Pour ajouter un point : une ligne dans un thème.
 const PAR_COEUR = [
   {
-    module: "1 · Réseau", maj: "14/11/2026",
+    module: "1 · Réseau", maj: "15/11/2026",
     figures: [{
       legende: "Les trois plages privées. Seuls ces débuts-là sont privés : tout le reste est public. Le piège est au milieu : en 172, seulement de 172.16 à 172.31.",
       svg: `<svg viewBox="0 0 660 250" role="img" aria-label="Les trois plages d'adresses privées : 10 point n'importe quoi ; 172 point 16 à 31 ; 192 point 168. Tout le reste est public, par exemple 8.8.8.8 ou 172.40.1.1.">
@@ -943,6 +956,7 @@ const PAR_COEUR = [
         ["Port client", "Choisi par le PC (un ticket par connexion : 1025, 1026…) ; Src = qui envoie, Dst = qui reçoit"] ] },
       { titre: "Dépanner en 4 étages (du bas vers le haut)", fiche: "depanner", lignes: [
         ["La règle n° 1", "Une commande = UN étage : pour tester la route, on pingue une IP, jamais un nom"],
+        ["0 · Voyants et câbles", "L'étage physique, avant tout : voyant rouge ou éteint = câble, prise ou port désactivé (une mauvaise IP laisse le voyant vert)"],
         ["1 · ipconfig /all", "Ma machine : adresse, masque, passerelle, et la ligne DNS Servers (169.254.x.x = pas d'adresse reçue)"],
         ["2 · ping une IP", "Le réseau sans les noms : la passerelle, puis 8.8.8.8"],
         ["3 · nslookup nom", "Les noms : demande l'adresse à un résolveur (nslookup picard.fr 8.8.8.8 = un autre résolveur)"],
@@ -952,7 +966,8 @@ const PAR_COEUR = [
         ["« Délai d'attente dépassé »", "L'adresse est trouvée, personne ne répond (serveur, ou pare-feu qui bloque le ping)"],
         ["ping 8.8.8.8 échoue", "La ROUTE (étage 2), jamais le DNS : on vise une IP. Passerelle OK + 8.8.8.8 KO = au-delà de la box"],
         ["nslookup échoue, 8.8.8.8 répond", "Le DNS : le résolveur réglé (ligne DNS Servers) ; plan B : nslookup nom 8.8.8.8, puis on CORRIGE la case"],
-        ["Prouver une réparation", "ping picard.fr : un succès prouve la config, la route et le DNS d'un coup"] ] },
+        ["PC témoin", "Un voisin du même switch marche : tout ce qui est partagé marche ; la panne est sur le poste (PC, câble ou port du switch), à chercher par le bas"],
+        ["Prouver une réparation", "Remonter tous les étages jusqu'au site ouvert par son NOM : un succès prouve la config, la route et le DNS d'un coup"] ] },
       { titre: "Comptes et droits", fiche: "depanner", lignes: [
         ["root", "Le compte superutilisateur de Linux (l'Administrateur de Windows)"],
         ["/ et /root", "/ = la racine du système de fichiers ; /root = le dossier personnel du compte root"],
@@ -968,10 +983,13 @@ const PAR_COEUR = [
         ["5 · → serveur de picard.fr", "Fait autorité : donne l'adresse officielle"],
         ["6 · Retour", "Chacun la garde en mémoire un moment : la prochaine réponse « ne fait pas autorité »"] ] },
       { titre: "Le trajet de la box", fiche: "box", lignes: [
+        ["Avant le départ", "Le DNS donne l'adresse de YouTube ; ensuite, le trajet commence"],
+        ["0 · Le téléphone", "Compare grâce à son masque : autre réseau, donc il confie l'enveloppe à sa passerelle (MAC de destination = celle du routeur)"],
         ["1 · Borne Wi-Fi", "Capte l'onde du téléphone et transmet au routeur"],
-        ["2 · Routeur", "La passerelle : lit les IP et décide que le paquet sort"],
-        ["3 · Modem", "Traduit le paquet pour la ligne (fibre, ADSL) : la dernière porte"],
-        ["4 · Opérateur et Internet", "Acheminent jusqu'au serveur, qui répond par le même chemin à l'envers"],
+        ["2 · Routeur", "La passerelle : lit les IP, décide que le paquet sort, et fait le NAT (adresse source privée → adresse publique de la box, noté avec un port)"],
+        ["3 · Modem", "Convertit le signal pour la ligne (fibre, ADSL), sans toucher aux adresses : la dernière porte"],
+        ["4 · Opérateur et Internet", "Les routeurs du fournisseur d'accès et d'Internet acheminent jusqu'au serveur de YouTube"],
+        ["5 · Le retour", "Le serveur répond à l'adresse publique de la box ; le routeur lit le port dans sa table NAT et remet l'adresse privée du téléphone en destination"],
         ["En Ethernet", "Le câble entre par le switch (les prises de la box) au lieu de la borne ; ensuite, même sortie : routeur, modem"] ] },
       { titre: "Qui fait quoi", fiche: "routeur", lignes: [
         ["Le PC", "Décide : compare avec son masque, écrit l'IP finale et la MAC de la passerelle (trouvée par ARP)"],
@@ -992,13 +1010,15 @@ const PAR_COEUR = [
       ["✏️ « Le serveur répond ACK, puis SYN-ACK. »", "SYN = question, ACK = oui : SYN → SYN-ACK → ACK. Le GET vient après."],
       ["✏️ « Le World Wide Web est composé de réseaux. »", "Ça, c'est Internet. Le Web est un service qui passe dessus ; le mail en est un autre."],
       ["✏️ « DNS 20, SSH 23. » (entretien du 12/11, puis séance 9)", "DNS 53. SSH 22 ; le 23, c'est Telnet, l'ancêtre qu'il remplace ; le 20, c'est FTP."],
-      ["✏️ « Ne fait pas autorité = pas en mémoire. » (13/11)", "C'est l'inverse : la réponse vient DE la mémoire d'un résolveur."]
+      ["✏️ « Ne fait pas autorité = pas en mémoire. » (13/11)", "C'est l'inverse : la réponse vient DE la mémoire d'un résolveur."],
+      ["✏️ « Le NAT transforme l'adresse de la passerelle. » (15/11, trois fois)", "Il remplace l'adresse SOURCE du téléphone ; les deux adresses du routeur ne bougent jamais. Au retour : le port, jamais la MAC."],
+      ["✏️ « On ne peut pas pinguer une adresse privée. » (15/11)", "Si, à travers les routeurs de l'entreprise. Privée = pas joignable depuis Internet."]
     ]
   }
 ];
 const pcId = m => "par-coeur-" + m.split(" ")[0];   // "1 · Réseau" → par-coeur-1
 
-// Leçons prévues, affichées grisées dans le sommaire (plan du module validé par Arnaud le 15/11/2026)
+// Leçons prévues, affichées grisées dans le sommaire (plan du module validé par Arnaud le 14/11/2026)
 const A_VENIR = [
   { module: "1 · Réseau", chapitre: "1.4", partie: "A", titre: "DHCP et ARP", niveau: "M" },
   { module: "1 · Réseau", chapitre: "1.5", partie: "A", titre: "Les sous-réseaux à la main", niveau: "M" },
