@@ -342,6 +342,47 @@ Address:  51.91.60.233           <span class="n">← LA RÉPONSE : l'IP de picar
     <text x="150" y="152" font-size="11" text-anchor="start" opacity=".75">même rue : direct</text>
   </g>
 </svg>`
+    }, {
+      legende: "✏️ 17/11 · Le retour, en deux tables, l’une après l’autre. La réponse de YouTube n’apporte que l’IP publique de la box et un port. ① La table NAT : la box cherche le PORT, elle trouve l’IP privée + le port du téléphone (aucune MAC dans cette table). ② La table ARP : avec l’IP privée, elle trouve la MAC du téléphone, puis livre par la borne Wi-Fi. Port → IP privée, puis IP privée → MAC.",
+      svg: `<svg viewBox="0 0 720 300" role="img" aria-label="Le retour : la réponse arrive avec IP publique et port 50123 ; la table NAT donne 192.168.1.30 port 51544 ; la table ARP donne la MAC du téléphone ; la borne Wi-Fi livre au téléphone.">
+  <defs><marker id="fl-ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="15" y="40" width="150" height="80" rx="8"/>
+    <rect x="200" y="20" width="330" height="260" rx="14" stroke-dasharray="6 5" opacity=".6"/>
+    <rect x="220" y="55" width="290" height="80" rx="8" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="220" y="175" width="290" height="80" rx="8" stroke-width="2.5"/>
+    <rect x="565" y="175" width="140" height="80" rx="8"/>
+    <line x1="165" y1="80" x2="218" y2="92" marker-end="url(#fl-ret)"/>
+    <line x1="365" y1="135" x2="365" y2="173" marker-end="url(#fl-ret)"/>
+    <line x1="510" y1="215" x2="563" y2="215" marker-end="url(#fl-ret)"/>
+    <line x1="232" y1="95" x2="498" y2="95" opacity=".4"/>
+    <line x1="232" y1="215" x2="498" y2="215" opacity=".4"/>
+  </g>
+  <g fill="currentColor" text-anchor="middle" font-size="13">
+    <text x="90" y="32" font-size="11" opacity=".8">la réponse arrive</text>
+    <text x="90" y="72" font-weight="600">IP publique</text>
+    <text x="90" y="92" font-weight="600" style="fill:var(--accent)">+ port 50123</text>
+    <text x="90" y="110" font-size="11" opacity=".75">rien d’autre !</text>
+    <text x="365" y="14" font-size="12" opacity=".8">DANS LA BOX</text>
+    <text x="365" y="76" font-weight="600" style="fill:var(--accent)">① Table NAT : je cherche le PORT</text>
+    <text x="365" y="118" font-family="IBM Plex Mono, Consolas, monospace">50123 → 192.168.1.30 : 51544</text>
+    <text x="378" y="160" font-size="11" text-anchor="start" opacity=".75">j’ai l’IP privée</text>
+    <text x="365" y="196" font-weight="600">② Table ARP : je cherche l’IP privée</text>
+    <text x="365" y="238" font-family="IBM Plex Mono, Consolas, monospace">192.168.1.30 → MAC du téléphone</text>
+    <text x="635" y="200" font-weight="600">Borne Wi-Fi</text>
+    <text x="635" y="220" font-weight="600">→ téléphone</text>
+    <text x="635" y="242" font-size="11" opacity=".75">livré ✓</text>
+  </g>
+</svg>`
+    }, {
+      bd: true,
+      legende: "✏️ 17/11 · Le retour dans la box, en petite BD (clique sur une case pour l’agrandir). Deux registres, l’un après l’autre : d’abord le registre NAT (le port donne l’IP privée), puis le carnet ARP (l’IP privée donne la MAC). Illustrations générées pour ce classeur (Nano Banana 2.1), une case par image.",
+      photos: [
+        { img: "images/bd-nat-1.jpg", titre: "1. La réponse revient", texte: "Le camion de l’opérateur rapporte la réponse de YouTube. Sur l’enveloppe, rien d’autre que l’IP publique de la box et un port : 50123. Ni MAC, ni IP privée : YouTube ne les a jamais vues.", credit: C, alt: "Devant le bureau de poste ROUTEUR, le chauffeur du camion gris à éclair tend à la guichetière une enveloppe marquée IP publique + port 50123." },
+        { img: "images/bd-nat-2.jpg", titre: "2. Le registre NAT", texte: "La guichetière cherche le PORT dans le registre orange. Elle trouve : 50123 → 192.168.1.30 : 51544. Elle réécrit la destination de l’enveloppe. Ce registre ne contient aucune MAC.", credit: C, alt: "La guichetière tient l’enveloppe port 50123 et pointe dans un registre orange TABLE NAT la ligne 50123 vers 192.168.1.30 : 51544." },
+        { img: "images/bd-nat-3.jpg", titre: "3. Le carnet ARP", texte: "Maintenant qu’elle a l’IP privée, elle ouvre un autre carnet, le vert : 192.168.1.30 → MAC du téléphone. La MAC sert seulement à livrer dans la maison.", credit: C, alt: "La guichetière ouvre un carnet vert TABLE ARP et pointe la ligne 192.168.1.30 vers MAC du téléphone, avec un petit dessin de téléphone." },
+        { img: "images/bd-nat-4.jpg", titre: "4. Livré", texte: "La borne Wi-Fi remet l’enveloppe, adressée maintenant à 192.168.1.30 : 51544, au bon téléphone. La vidéo démarre.", credit: C, alt: "Devant sa maison, l’habitant en salopette sort de la boîte aux lettres bleue BORNE WI-FI une enveloppe marquée 192.168.1.30 : 51544 ; son téléphone affiche un bouton lecture rouge." }
+      ]
     }],
     probleme: "Des milliards d'appareils s'envoient des messages et des requêtes. Il faut que chacun ait une adresse, et que cette adresse permette de trouver le chemin jusqu'à lui.",
     analogie: "L'adresse postale : le nom de la rue (le réseau) plus le numéro de la maison (la machine). Les appareils d'une même rue se parlent directement. Pour une autre rue, on passe par la sortie du quartier : la passerelle.",
@@ -531,13 +572,13 @@ cf-cache-status: HIT                  <span class="n">← servi depuis le cache<
       legende: "Le trajet dans la box, en petite BD (clique sur une case pour l'agrandir). Règle : de l'intérieur vers l'extérieur, du plus proche de toi au plus proche de l'opérateur. C'est la lettre qui voyage, pas l'habitant : le téléphone reste chez lui. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
       photos: [
         { img: "images/bd-box-1.jpg", titre: "1. La boîte aux lettres devant la maison", texte: "La borne Wi-Fi : le téléphone y dépose sa demande par radio, sans câble. C'est l'appareil le plus proche, donc le premier.", credit: "Nano Banana Pro", alt: "L'habitant en salopette, téléphone en main, glisse une lettre dans une boîte aux lettres bleue munie d'une antenne, panneau BORNE WI-FI ; des ondes radio vont du téléphone à la boîte." },
-        { img: "images/bd-box-2.jpg", titre: "2. Le bureau de poste", texte: "Le routeur lit l'adresse : « pas dans notre rue », et décide que ça sort. Il décide, il ne traduit pas.", credit: "Nano Banana Pro", alt: "Dans un bureau de poste marqué ROUTEUR, une guichetière lit l'enveloppe à la loupe et montre du doigt une porte SORTIE." },
+        { img: "images/bd-box-2.jpg", titre: "2. Le bureau de poste", texte: "Le routeur lit l'adresse : « pas dans notre rue », et décide que ça sort. Il décide, il ne convertit rien.", credit: "Nano Banana Pro", alt: "Dans un bureau de poste marqué ROUTEUR, une guichetière lit l'enveloppe à la loupe et montre du doigt une porte SORTIE." },
         { img: "images/bd-box-3.jpg", titre: "3. Le quai de chargement", texte: "Le modem met la lettre dans le sac du camion de l'opérateur, au format de la route. Il convertit, il ne lit ni ne décide rien. C'est la dernière porte de la maison.", credit: "Nano Banana Pro", alt: "Sur un quai marqué MODEM, un employé en casquette range l'enveloppe dans un sac gris à éclair, à l'arrière d'un camion ouvert." },
         { img: "images/bd-box-4.jpg", titre: "4. L'autoroute", texte: "L'opérateur et Internet : le camion roule jusqu'à la ville du serveur YouTube.", credit: "Nano Banana Pro", alt: "Un camion gris à éclair roule sur une autoroute sous un portique INTERNET ; au loin, une ville avec un drapeau rouge en forme de bouton lecture." },
         { img: "images/bd-box-5.jpg", titre: "5. Le studio répond", texte: "Le serveur YouTube renvoie la vidéo, qui fait le même chemin à l'envers : modem, routeur, borne Wi-Fi, téléphone.", credit: "Nano Banana Pro", alt: "Devant un studio marqué SERVEUR, un employé tend un colis avec une bobine de film au chauffeur du camion ; en bas, des icônes camion, bureau de poste, boîte aux lettres, téléphone, reliées par des flèches vers le téléphone." }
       ]
     }, {
-      legende: "Le vrai matériel. Le switch a beaucoup de prises, une par appareil, et ses voyants verts disent « câble branché, ça marche » (comme les points verts de Packet Tracer). Le routeur en a peu : il relie quelques réseaux entre eux. Le modem, posé dessus, est un appareil à part : il traduit pour la ligne de l'opérateur. Chez toi, la box range tout ça dans un seul boîtier.",
+      legende: "Le vrai matériel. Le switch a beaucoup de prises, une par appareil, et ses voyants verts disent « câble branché, ça marche » (comme les points verts de Packet Tracer). Le routeur en a peu : il relie quelques réseaux entre eux. Le modem, posé dessus, est un appareil à part : il convertit le signal pour la ligne de l'opérateur. Chez toi, la box range tout ça dans un seul boîtier.",
       photos: [
         { img: "images/photo-switch.webp", alt: "Un switch Cisco Catalyst 2960-S dans une baie, ses prises remplies de câbles jaunes, voyants verts allumés.", titre: "Switch (Cisco 2960-S)", credit: "Dmitry Grigoriev, CC BY 2.0, Wikimedia Commons" },
         { img: "images/photo-routeur-modem.webp", alt: "Un routeur Cisco série 1900 dans une baie, avec un modem DM991CE posé dessus.", titre: "Routeur (Cisco 1900) et modem posé dessus", credit: "Maraguache, CC BY-SA 4.0, Wikimedia Commons" },
