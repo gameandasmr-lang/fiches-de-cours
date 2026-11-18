@@ -960,7 +960,7 @@ curl -I https://www.picard.fr HTTP/1.1 200 OK · Server: cloudflare <span class=
 // Pour ajouter un module : un objet ici (module = le même libellé que dans FICHES). Pour ajouter un point : une ligne dans un thème.
 const PAR_COEUR = [
   {
-    module: "1 · Réseau", maj: "15/11/2026",
+    module: "1 · Réseau", maj: "18/11/2026",
     figures: [{
       legende: "Les trois plages privées. Seuls ces débuts-là sont privés : tout le reste est public. Le piège est au milieu : en 172, seulement de 172.16 à 172.31.",
       svg: `<svg viewBox="0 0 660 250" role="img" aria-label="Les trois plages d'adresses privées : 10 point n'importe quoi ; 172 point 16 à 31 ; 192 point 168. Tout le reste est public, par exemple 8.8.8.8 ou 172.40.1.1.">
@@ -1069,7 +1069,12 @@ const PAR_COEUR = [
       ["✏️ « DNS 20, SSH 23. » (entretien du 12/11, puis séance 9)", "DNS 53. SSH 22 ; le 23, c'est Telnet, l'ancêtre qu'il remplace ; le 20, c'est FTP."],
       ["✏️ « Ne fait pas autorité = pas en mémoire. » (13/11)", "C'est l'inverse : la réponse vient DE la mémoire d'un résolveur."],
       ["✏️ « Le NAT transforme l'adresse de la passerelle. » (15/11, trois fois)", "Il remplace l'adresse SOURCE du téléphone ; les deux adresses du routeur ne bougent jamais. Au retour : le port, jamais la MAC."],
-      ["✏️ « On ne peut pas pinguer une adresse privée. » (15/11)", "Si, à travers les routeurs de l'entreprise. Privée = pas joignable depuis Internet."]
+      ["✏️ « On ne peut pas pinguer une adresse privée. » (15/11)", "Si, à travers les routeurs de l'entreprise. Privée = pas joignable depuis Internet."],
+      ["⛔ « Le routeur regarde sa table ARP et redistribue à la télé. » (E1, éliminatoire)", "Même réseau = le routeur n'intervient pas. La partie switch de la box (ou la borne Wi-Fi) livre avec la MAC. Le routeur ne sert qu'à sortir vers un autre réseau."],
+      ["✏️ « Au retour, la box se met en adresse source. » (E1)", "Au retour, seule la DESTINATION change (IP publique → IP privée). La source reste le serveur : le téléphone doit savoir qui lui répond."],
+      ["✏️ « 192.169.1.1 est privée, comme 192.168. » (E1)", "La plage privée, c'est 192.168 uniquement. 192.169 est publique."],
+      ["✏️ « ping 8.8.8.8 échoue : on ne sait pas encore si c'est le DNS. » (E1)", "Si : ce n'est jamais le DNS. On vise une IP, aucun nom n'est traduit. Passerelle OK + 8.8.8.8 KO = l'étage de la route."],
+      ["✏️ « Les câbles sont verts, c'est réparé. » (E1)", "On prouve une réparation en refaisant le test qui échouait (ex. le ping vers l'autre réseau), avec son résultat."]
     ]
   }
 ];
