@@ -425,6 +425,8 @@ Passerelle par défaut. . . .: fe80::2266:…%13  <span class="n">← ma box, en
       ["✏️ 15/11 · « On ne peut pas pinguer une adresse privée à travers un routeur. »", "Si : dans l'entreprise, les routeurs font passer les adresses privées sans problème, pourvu que chaque machine ait sa passerelle. Privée = pas joignable DEPUIS INTERNET (les routeurs d'Internet ne les transportent pas), pas « impossible à joindre »."],
       ["✏️ 16/11 (4e fois) · « Au retour, la box compare l’IP et la MAC dans sa table NAT. »", "La réponse de YouTube ne porte que l’IP publique de la box et un PORT. Demande-toi toujours : qu’est-ce qui est réellement écrit sur le paquet, à cet endroit ? Une MAC de chez toi ne peut pas y être. La table NAT relie ce port à l’IP privée + le port du téléphone."],
       ["✏️ 16/11 · « C’est un nom de domaine, donc le téléphone ne compare pas les parties réseau. »", "Le DNS ne remplace pas la comparaison, il la précède : d’abord l’IP de YouTube, ensuite le masque dit « pas le même réseau », donc la passerelle."],
+      ["✏️ 18/11 (rattrapage, Q12) · « La box compare l'adresse de l'inconnu avec les IP privées qu'elle connaît. »", "Elle cherche dans sa table NAT une ligne qui ATTEND cette connexion (un port ouvert depuis l'intérieur). Une connexion nouvelle venue de dehors n'a aucune ligne : la box ne sait pas à quel appareil la remettre, elle la jette. Sécurité : tes appareils ne sont pas joignables directement depuis Internet."],
+      ["✏️ 18/11 (rattrapage, Q6) · Au retour, laisser « 192.168.0.1 : 443 » en source.", "Au retour, la box ne change QUE la destination. La source reste le serveur (51.91.60.233 : 443) jusqu'au PC. Su en Q3, oublié en Q6 : relire chaque ligne en se demandant « source ou destination ? »."]
     ],
     enplus: "<p><b>Le NAT, c'est l'accueil d'un hôtel.</b> Les chambres ont des numéros internes (les IP privées) ; l'hôtel a une seule adresse postale (l'IP publique). L'accueil (la box) met l'adresse de l'hôtel comme expéditeur sur chaque lettre et note dans un registre (la table NAT) quelle chambre a écrit à qui, grâce à un numéro de port. Quand la réponse arrive, il la remonte à la bonne chambre. Vérifié en séance : <code>curl.exe ifconfig.me</code> affiche l'adresse publique de la box, pas celle du PC. La box a deux faces : 192.168.1.254 dedans, l'IP publique dehors. Bonus sécurité : une connexion venue de dehors que personne n'a demandée n'est pas dans le registre, donc la box la jette.</p><p><b>✏️ Le NAT dans les deux sens (15/11), sur un exemple.</b></p><pre>                  SOURCE                        DESTINATION\nAller, avant      192.168.120.120 (téléphone)   142.250.x.x (YouTube)\nAller, après      88.12.34.56 (box, publique)   142.250.x.x          ← inchangée\nRetour, arrivée   142.250.x.x                   88.12.34.56 port 50000\nRetour, après     142.250.x.x                   192.168.120.120 port 51000\n\nTable NAT :  192.168.120.120 port 51000  ↔  88.12.34.56 port 50000</pre><p>À l'aller, le routeur remplace la <b>source</b> ; au retour, la <b>destination</b>. Entre les deux, sa table NAT, où chaque connexion a son propre port côté Internet : c'est le port qui retrouve le bon appareil. Les deux adresses du routeur (192.168.120.1 dedans, 88.12.34.56 dehors) ne changent jamais.</p><p><b>Pourquoi un serveur a aussi un nom ?</b> Un nom de domaine n'est qu'une étiquette posée sur une adresse IP, et n'importe quelle machine peut en avoir une. Les sites en sont l'usage le plus connu, mais les administrateurs nomment aussi leurs machines pour s'y retrouver : <code>eole2.iptwins.com</code>, c'est « la machine Eole n° 2 d'IP Twins ». Comme chez Picard, où le magasin a une enseigne pour les clients, mais où la chambre froide a aussi son étiquette pour les techniciens.</p>",
     questions: [
@@ -654,7 +656,8 @@ PC0 → ping 192.168.2.30                Request timed out (0 sur 4) <span class
       ["✏️ « Le switch compare les parties réseau des adresses IP. »", "Non : c'est le PC qui compare, avec son masque. Le switch ne lit que l'adresse MAC et transmet à la bonne prise. Le PC décide, le switch livre (mission Packet Tracer « Qui bloque ? » du 11/11)."],
       ["✏️ Tes pièges du 12/11 (séance 8) : « le switch se repère avec le masque ».", "Le masque, c'est le PC (il décide). Le switch de couche 2 se repère avec les adresses MAC et livre chaque paquet à la bonne prise."],
       ["✏️ « Le PC fixe en Ethernet va directement au routeur. »", "Le câble entre par une prise de la box, c'est-à-dire son switch intégré. Seule l'entrée change (switch pour le câble, borne Wi-Fi pour la radio) ; la sortie est toujours routeur, puis modem."],
-      ["« Le téléphone passe d'abord par le modem. »", "Non : téléphone → borne Wi-Fi → routeur → modem → opérateur. Le téléphone parle par radio à l'appareil le plus proche, la borne. Le modem est la dernière porte, celle qui donne sur la ligne de l'opérateur. Retiens : je parle (borne), je décide (routeur), je traduis (modem), je sors."]
+      ["« Le téléphone passe d'abord par le modem. »", "Non : téléphone → borne Wi-Fi → routeur → modem → opérateur. Le téléphone parle par radio à l'appareil le plus proche, la borne. Le modem est la dernière porte, celle qui donne sur la ligne de l'opérateur. Retiens : je parle (borne), je décide (routeur), je traduis (modem), je sors."],
+      ["✏️ 18/11 (rattrapage, Q4) · « Le PC reconnaît le switch grâce à sa table ARP. »", "La table ARP du PC associe des IP à des MAC : celles de la passerelle et des machines à qui il parle (l'imprimante), jamais celle du switch. Le PC ignore même que le switch existe."]
     ],
     enplus: "<p><b>Pourquoi les entreprises ont plusieurs réseaux avec un seul abonnement Internet.</b> Un réseau n'est pas un abonnement : c'est un groupe d'adresses. On découpe souvent une entreprise en plusieurs réseaux (la compta, les ateliers, le Wi-Fi des clients) reliés par un routeur, pour la sécurité : un virus arrivé dans un réseau n'atteint pas directement les autres. C'est la base des VLAN, que tu verras plus tard.</p><p><b>✏️ Switch de couche 2 ou de couche 3 (12/11, TryHackMe Extending Your Network, tâche 5).</b> Le switch classique, de <b>couche 2</b>, se repère avec les <b>adresses MAC</b> et livre à la bonne prise, dans le même réseau. Le switch de <b>couche 3</b> fait la même chose <b>et route</b> entre des réseaux différents, grâce aux <b>adresses IP</b> : il a une adresse dans chaque réseau, et c'est lui, la passerelle de chaque PC. Ce n'est pas un routeur : le switch de couche 3 relie les services à l'intérieur de l'entreprise (beaucoup de prises, très rapide), le routeur est à la sortie vers Internet (NAT, opérateur, pare-feu). Les « couches », c'est le modèle OSI (étape 4). En résumé : PC → masque et passerelle (il décide) · switch couche 2 → MAC (il livre) · switch couche 3 ou routeur → IP (il route).</p>",
     questions: [
@@ -752,6 +755,47 @@ PC0 → ping 192.168.2.30                Request timed out (0 sur 4) <span class
   <text x="350" y="24" text-anchor="middle" font-size="12" fill="currentColor" opacity=".8">la MAC de la passerelle, le PC l'a trouvée par ARP (« qui a 192.168.1.254 ? »)</text>
 </svg>`
     }, {
+      legende: "✏️ 18/11 · Deux adresses de destination, saut par saut, sur le réseau du rattrapage de l'E1 (PC-Vente1 pingue PC-Stock1). L'IP de destination est le but final : elle reste la même d'un bout à l'autre. La MAC de destination est le prochain saut : le routeur fabrique une nouvelle trame de l'autre côté. Même réseau (PC → imprimante), il n'y a qu'une trame, et la MAC de destination est celle de l'imprimante. Comme une lettre : l'adresse sur l'enveloppe ne change pas, la personne à qui on la tend change à chaque relais.",
+      svg: `<svg viewBox="0 0 760 320" role="img" aria-label="PC-Vente1 envoie un ping à PC-Stock1 à travers SW-Vente, R1 et SW-Stock. Trame 1 : IP 192.168.30.10 vers 192.168.40.10, MAC de PC-Vente1 vers R1. Trame 2 : mêmes IP, MAC de R1 vers PC-Stock1. Aucun switch dans les adresses.">
+  <defs><marker id="fl-saut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="10" y="20" width="120" height="50" rx="8"/>
+    <rect x="175" y="20" width="95" height="50" rx="8" stroke-dasharray="5 4" opacity=".6"/>
+    <rect x="320" y="20" width="120" height="50" rx="25" style="stroke:var(--accent)" stroke-width="2.5"/>
+    <rect x="490" y="20" width="95" height="50" rx="8" stroke-dasharray="5 4" opacity=".6"/>
+    <rect x="630" y="20" width="120" height="50" rx="8"/>
+    <line x1="130" y1="45" x2="175" y2="45"/><line x1="270" y1="45" x2="320" y2="45"/>
+    <line x1="440" y1="45" x2="490" y2="45"/><line x1="585" y1="45" x2="630" y2="45"/>
+    <line x1="70" y1="102" x2="378" y2="102" marker-start="url(#fl-saut)" marker-end="url(#fl-saut)"/>
+    <line x1="382" y1="102" x2="690" y2="102" marker-start="url(#fl-saut)" marker-end="url(#fl-saut)"/>
+    <rect x="10" y="125" width="360" height="130" rx="6"/>
+    <rect x="390" y="125" width="360" height="130" rx="6"/>
+  </g>
+  <g text-anchor="middle" fill="currentColor" font-size="13">
+    <text x="70" y="42" font-weight="600">PC-Vente1</text><text x="70" y="60" font-size="11">192.168.30.10</text>
+    <text x="222" y="42" opacity=".75">SW-Vente</text><text x="222" y="60" font-size="10" opacity=".75">un couloir</text>
+    <text x="380" y="42" font-weight="600" style="fill:var(--accent)">R1</text><text x="380" y="60" font-size="11">.30.1 | .40.1</text>
+    <text x="537" y="42" opacity=".75">SW-Stock</text><text x="537" y="60" font-size="10" opacity=".75">un couloir</text>
+    <text x="690" y="42" font-weight="600">PC-Stock1</text><text x="690" y="60" font-size="11">192.168.40.10</text>
+    <text x="224" y="95" font-size="12" font-weight="600">trame 1</text>
+    <text x="536" y="95" font-size="12" font-weight="600">trame 2</text>
+  </g>
+  <g fill="currentColor" font-size="13" font-family="IBM Plex Mono, Consolas, monospace">
+    <text x="24" y="152">IP source   192.168.30.10</text>
+    <text x="24" y="178" font-weight="600" style="fill:var(--accent)">IP dest.    192.168.40.10</text>
+    <text x="24" y="210">MAC source  PC-Vente1</text>
+    <text x="24" y="236" font-weight="600">MAC dest.   R1 (Gi0/0)</text>
+    <text x="404" y="152">IP source   192.168.30.10</text>
+    <text x="404" y="178" font-weight="600" style="fill:var(--accent)">IP dest.    192.168.40.10</text>
+    <text x="404" y="210">MAC source  R1 (Gi0/1)</text>
+    <text x="404" y="236" font-weight="600">MAC dest.   PC-Stock1</text>
+  </g>
+  <g text-anchor="middle" fill="currentColor" font-size="12">
+    <text x="380" y="285"><tspan style="fill:var(--accent)" font-weight="600">IP de destination : ne bouge pas</tspan> (le but final)  ·  <tspan font-weight="600">MAC de destination : change au routeur</tspan> (le prochain saut)</text>
+    <text x="380" y="307" opacity=".85">Aucun switch dans les cases : il lit la MAC de destination et pousse la trame vers la bonne prise.</text>
+  </g>
+</svg>`
+    }, {
       bd: true,
       legende: "BD « Le PC décide, le switch livre », à lire case par case (clique pour agrandir). Les mêmes personnages que la BD de la passerelle : l'habitant = le PC, le facteur = le switch, le bureau de poste = le routeur, le post-it = la passerelle par défaut. Illustrations générées pour ce classeur (Nano Banana Pro), une case par image.",
       photos: [
@@ -795,7 +839,11 @@ Passerelle partout :   PC0 → PC3   Reply TTL=127 (3/4)  <span class="n">← 1e
       ["Après un redémarrage, le routeur a tout oublié.", "Sa configuration est en mémoire vive : il faut l'enregistrer (Config → Settings → NVRAM : Save), sinon elle est perdue."],
       ["« Le switch distribue les paquets. »", "Le switch TRANSMET. « Distribuer » est le mot réflexe à remplacer, le jury l'entend comme une erreur."],
       ["✏️ Ton piège du 11/11 (trois fois en séance 7) : « Le switch transmet au routeur quand il ne peut pas livrer. »", "C'est le PC qui décide, avant d'envoyer : autre réseau, donc il écrit la MAC de la passerelle sur l'enveloppe (trouvée par ARP). Le switch la porte jusqu'à la prise du routeur parce que c'est écrit dessus. Sans passerelle, le PC jette lui-même le paquet : « The default gateway is not set. The device drops the packet. »"],
-      ["✏️ « Le ping est une tentative de connexion. »", "Un ping est un simple message ICMP (demande d'écho, réponse d'écho), sans connexion ni port. Il prouve que la machine est joignable, pas que ses services (le site sur le port 443) marchent."]
+      ["✏️ « Le ping est une tentative de connexion. »", "Un ping est un simple message ICMP (demande d'écho, réponse d'écho), sans connexion ni port. Il prouve que la machine est joignable, pas que ses services (le site sur le port 443) marchent."],
+      ["✏️ 18/11 (rattrapage, Q4 et Q6) · « Le PC met l'adresse MAC du switch. »", "Le switch n'est jamais le destinataire : personne n'écrit sa MAC. Même réseau → MAC de destination = celle de la machine visée (l'imprimante). Autre réseau → celle du routeur (la passerelle). Le switch lit cette MAC et pousse la trame vers la bonne prise : c'est un couloir, pas une personne."],
+      ["✏️ 18/11 (rattrapage, Q6) · « Le paquet qui quitte le PC va vers 192.168.0.1 (la passerelle). »", "L'IP de destination reste le serveur final (51.91.60.233), du départ à l'arrivée. Seule la MAC de destination est celle de la passerelle. Deux adresses de destination : l'IP = le but final, la MAC = le prochain saut."],
+      ["✏️ 18/11 (rattrapage, Q11) · « Passerelle hors de mon réseau : il ne sait pas à qui remettre. »", "La vraie raison : le PC remet la trame DIRECTEMENT à sa passerelle, après avoir demandé sa MAC par ARP. L'ARP ne sort pas du réseau local : une passerelle hors de mon réseau ne peut ni entendre la question ni recevoir la trame."],
+      ["✏️ 18/11 (rattrapage, Q9) · « La passerelle par défaut du routeur est mal configurée. »", "Le mot exact : l'adresse IP de l'interface Gi0/1 de R1 était fausse (.254 au lieu de .1). C'est cette adresse d'interface qui sert de passerelle aux PC du réseau ; le routeur lui-même n'a pas de « passerelle par défaut » à régler ici."]
     ],
     enplus: "<p><b>Capsule d'histoire : pourquoi « ping » ?</b> Le programme a été écrit en décembre 1983 par Mike Muuss, programmeur au laboratoire de recherche de l'armée américaine, qui l'a nommé d'après le bruit du sonar. Mais contrairement au sonar, rien ne « rebondit » : la cible reçoit une demande d'écho (echo request) et doit fabriquer et envoyer elle-même une réponse (echo reply). D'où le besoin d'une passerelle des deux côtés.</p>",
     questions: [
@@ -933,6 +981,9 @@ curl -I https://www.picard.fr HTTP/1.1 200 OK · Server: cloudflare <span class=
       ["✏️ 15/11 · « Le PC témoin prouve que la panne vient de la configuration du PC. »", "Le témoin prouve que tout ce qui est partagé marche (switch, box, Internet). La panne est sur le poste du collègue : son PC, son câble OU son port du switch. Il ne dit pas lequel : on reprend les étages par le bas. Mission 3 : c'était le port, pas la configuration."],
       ["✏️ 15/11 · Étage 3 : « ping du nom » ; étage 4 : « curl -i ».", "Étage 3 = nslookup : lui seul affiche quel résolveur répond. Étage 4 = curl -I (I majuscule : seulement le statut et les en-têtes ; -i minuscule ajoute toute la page)."],
       ["✏️ 16/11 · « La panne est au dernier étage » (passerelle OK, 8.8.8.8 KO).", "C’est l’étage 2, la route : le premier qui échoue. Et ce n’est pas le DNS parce que ping 8.8.8.8 vise une IP, sans aucun DNS ; que 8.8.8.8 soit un serveur DNS ne joue aucun rôle. nslookup échoue À CAUSE de la route."],
+      ["✏️ 18/11 (rattrapage, Q4 et Q7) · Soupçonner la box ou le routeur alors que les collègues ont Internet.", "« Les autres ont Internet » = la box, le routeur et l'opérateur marchent. La panne est sur CE poste (configuration, câble, port). Et redémarrer la box couperait tout le monde pour rien."],
+      ["✏️ 18/11 (rattrapage, Q7) · « ping 8.8.8.8 OK, ping picard.fr KO : étage de l'adressage ; je vérifie avec ipconfig /all. »", "C'est l'étage des NOMS (le DNS, étage 3). ipconfig /all montre le réglage, il ne teste rien ; la commande qui confirme, c'est nslookup picard.fr."],
+      ["✏️ 18/11 (rattrapage, Q9 et Q10) · Symptôme = « port éteint » ; preuve = « tout fonctionne ».", "Le symptôme, c'est le test qui échoue (« PC-Stock2 ne joint même pas PC-Stock1 »), la cause vient après. La preuve, c'est le test refait avec ses trois éléments : PC de départ, adresse visée, résultat (ex. PC-Stock2 → 192.168.30.10 : 4 reçus sur 4)."]
     ],
     enplus: "<p><b>Capsule d'histoire : pourquoi ces noms ?</b> <b>ping</b> vient du sonar (Mike Muuss, décembre 1983) ; le sens « Packet InterNet Groper » a été inventé après coup. <b>nslookup</b> = <i>name server lookup</i>, « consulter un serveur de noms », né dans les années 1980 avec BIND, le serveur DNS de l'université de Berkeley ; le DNS lui-même date de 1983 (Paul Mockapetris) et a remplacé HOSTS.TXT, un fichier unique qui listait à la main tous les noms d'Internet. <b>ipconfig</b> = <i>IP configuration</i> (sous Linux : ifconfig, puis ip). <b>curl</b> = <i>Client URL</i> : Daniel Stenberg, un développeur suédois, voulait qu'un programme aille chercher tout seul des taux de change sur le Web ; première version sous ce nom en 1998, aujourd'hui présent dans des milliards d'appareils.</p><p><b>Le DNS n'est pas une machine, c'est un système.</b> Le résolveur (ta box, puis celui de ton fournisseur, ou 8.8.8.8 chez Google) cherche pour toi et retient les réponses un moment ; les serveurs qui font autorité (la racine, le .fr, puis celui de picard.fr) possèdent chacun leur page de l'annuaire, et rien d'autre.</p><p><b>✏️ Sous l'étage 1 : l'étage physique (15/11).</b> Avant même ipconfig, on regarde les voyants et les câbles. Voyant éteint ou rouge (orange dans Packet Tracer) = rien ne passe : câble débranché ou abîmé, mauvaise prise, port du switch désactivé. Une mauvaise adresse IP, elle, laisse le voyant vert.</p><p><b>✏️ Le PC témoin.</b> Un poste du même réseau, branché au même switch, qui marche. Il prouve que tout ce qu'il partage avec le PC en panne fonctionne (le switch, la box, Internet, le DNS de la box) : inutile d'appeler l'opérateur. La panne est donc propre au poste en panne, PC, câble ou port compris. Il ne dit pas lequel : on cherche la différence, étage par étage, depuis le bas.</p><p><b>✏️ Prouver une réparation.</b> Après la réparation, on remonte tous les étages jusqu'au geste de l'utilisateur : ping de la passerelle, ping 8.8.8.8, nslookup, puis le site par son NOM, dans le navigateur. Une panne peut en cacher une autre : mission 3 du 15/11, le port réparé, il restait une case DNS fausse. Et on répare la cause, on ne la contourne pas.</p>",
     questions: [
@@ -1054,6 +1105,7 @@ const PAR_COEUR = [
         ["Switch couche 2 / 3", "Couche 2 = MAC, même réseau · couche 3 = en plus, route entre réseaux grâce aux IP (dans l'entreprise ; le routeur, lui, est à la sortie)"],
         ["Sans passerelle", "Le PC jette lui-même le paquet vers un autre réseau"],
         ["Adresse MAC", "Une par carte réseau ; elle ne sort jamais du réseau local"],
+        ["Deux destinations", "IP de destination = le but final, ne change pas (sauf le NAT de la box) · MAC de destination = le prochain saut, change à chaque routeur · le switch n'est jamais dans une adresse"],
         ["Internet / Web", "Les réseaux reliés / un service (les sites) qui passe dessus"],
         ["Ping (ICMP)", "La machine est joignable ; ça ne dit rien du service (port 443)"] ] }
     ],
@@ -1074,6 +1126,7 @@ const PAR_COEUR = [
       ["✏️ « Au retour, la box se met en adresse source. » (E1)", "Au retour, seule la DESTINATION change (IP publique → IP privée). La source reste le serveur : le téléphone doit savoir qui lui répond."],
       ["✏️ « 192.169.1.1 est privée, comme 192.168. » (E1)", "La plage privée, c'est 192.168 uniquement. 192.169 est publique."],
       ["✏️ « ping 8.8.8.8 échoue : on ne sait pas encore si c'est le DNS. » (E1)", "Si : ce n'est jamais le DNS. On vise une IP, aucun nom n'est traduit. Passerelle OK + 8.8.8.8 KO = l'étage de la route."],
+      ["✏️ « Le PC met la MAC du switch » / « l'IP de destination devient la passerelle ». (rattrapage E1)", "MAC de destination = la machine visée (même réseau) ou le routeur (autre réseau), jamais le switch. L'IP de destination reste le serveur final tout le trajet."],
       ["✏️ « Les câbles sont verts, c'est réparé. » (E1)", "On prouve une réparation en refaisant le test qui échouait (ex. le ping vers l'autre réseau), avec son résultat."]
     ]
   }
